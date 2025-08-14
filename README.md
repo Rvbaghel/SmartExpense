@@ -1,2 +1,4 @@
 # Personal_Salary_Management
-A personal salary management web app built with Flask &amp; Streamlit. Users can log income, track expenses via form or CSV, view interactive dashboards, and download reports. Includes AI-powered predictions and recommendations to help improve savings and spending habits.
+Personal Salary Management System is a web application that helps individuals manage their monthly income and expenses efficiently.
+It allows users to input salary details, record daily expenses (via form or CSV upload), track spending patterns, and visualize financial data through an interactive dashboard.
+The system also includes AI-powered predictions and recommendations to help users save more and spend wisely.
