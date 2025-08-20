@@ -1,0 +1,53 @@
+personal_salary_manager/
+│
+├── backend/                       # Flask Backend (Main App)
+│   ├── app.py                      # Flask entry point
+│   ├── config.py                   # Config (DB URI, secrets)
+│   ├── models.py                   # SQLAlchemy models
+│   ├── forms.py                    # Flask-WTF forms
+│   ├── routes/                     # Flask routes separated by feature
+│   │   ├── auth_routes.py          # Login, Signup, Logout
+│   │   ├── expense_routes.py       # Expense input, CSV upload
+│   │   ├── salary_routes.py        # Salary & personal details
+│   │   ├── user_routes.py          # Profile, settings
+│   │   ├── prediction_routes.py    # AI recommendation APIs
+│   │   ├── dashboard_api.py        # APIs for Streamlit to fetch data
+│   │
+│   ├── static/                     # CSS, JS, Images
+│   │   ├── css/
+│   │   ├── js/
+│   │   ├── images/
+│   │
+│   ├── templates/                  # HTML Templates (Jinja2)
+│   │   ├── base.html                # Common layout
+│   │   ├── index.html               # Homepage
+│   │   ├── login.html
+│   │   ├── signup.html
+│   │   ├── expense_input.html
+│   │   ├── salary_input.html
+│   │   ├── profile.html
+│   │   ├── about.html
+│   │   ├── prediction.html
+│   │
+│   └── utils/
+│       ├── database.py              # DB connection setup
+│       ├── ml_model.py              # ML prediction functions
+│       ├── helpers.py               # Utility functions
+│
+├── dashboard/                      # Streamlit Dashboard
+│   ├── dashboard_app.py            # Streamlit entry point
+│   ├── pages/                      # If using Streamlit multipage
+│   │   ├── 1_Expense_Analysis.py
+│   │   ├── 2_Salary_vs_Expenses.py
+│   │   ├── 3_Savings_Prediction.py
+│   │
+│   └── utils/
+│       ├── api_client.py           # Calls Flask APIs for data
+│       ├── charts.py               # Common chart functions
+│
+├── data/                           # Store CSV uploads or sample data
+│
+├── venv/                           # Virtual environment
+│
+├── requirements.txt                # Python dependencies
+└── README.md                       # Project documentation
