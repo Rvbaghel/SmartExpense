@@ -21,7 +21,7 @@ personal_salary_manager/
 │   ├── templates/                  # HTML Templates (Jinja2)
 │   │   ├── base.html                # Common layout
 │   │   ├── index.html               # Homepage
-│   │   ├── login.html
+│   │   ├── login.html  
 │   │   ├── signup.html
 │   │   ├── expense_input.html
 │   │   ├── salary_input.html

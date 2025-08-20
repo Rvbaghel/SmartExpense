@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,render_template
 from utils.database import db
 # from routers.expense_routes import expense_bp
 import config
@@ -21,8 +21,12 @@ def create_app():
 
     @app.route("/")
     def home():
-        return {"message": "Welcome to Salary Management API"}
+        return render_template("index.html")
 
+    @app.route('/expenses')
+    def expenses():
+        return render_template('expense_input.html')
+    
     return app
 
 
