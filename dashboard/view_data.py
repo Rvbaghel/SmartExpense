@@ -5,9 +5,9 @@ from sqlalchemy import create_engine, text
 
 # ---------- DATABASE CONNECTION ----------
 DB_USER = "root"        # your MySQL username
-DB_PASSWORD = ""        # your MySQL password
+DB_PASSWORD = "3872"        # your MySQL password
 DB_HOST = "localhost"
-DB_NAME = "salary_manage"
+DB_NAME = "salary"
 
 engine = create_engine(f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}")
 
