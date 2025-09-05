@@ -51,3 +51,121 @@ personal_salary_manager/
 │
 ├── requirements.txt                # Python dependencies
 └── README.md                       # Project documentation
+
+
+smartexpense/
+│
+├── frontend/                          # React frontend (Vercel)
+│   ├── public/
+│   │   ├── index.html
+│   │   ├── favicon.ico
+│   │   └── logo.png
+│   │
+│   ├── src/
+│   │   ├── assets/
+│   │   │   ├── images/
+│   │   │   └── icons/
+│   │   │
+│   │   ├── components/
+│   │   │   ├── Navbar.js
+│   │   │   ├── Footer.js
+│   │   │   ├── ExpenseForm.js
+│   │   │   ├── SalaryForm.js
+│   │   │   ├── ProtectedRoute.js
+│   │   │   └── ChartCard.js
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Auth/
+│   │   │   │   ├── Login.js
+│   │   │   │   └── Signup.js
+│   │   │   ├── Dashboard.js
+│   │   │   ├── AddSalary.js
+│   │   │   ├── AddExpense.js
+│   │   │   ├── ExpenseList.js
+│   │   │   ├── Reports.js
+│   │   │   ├── Profile.js
+│   │   │   └── About.js
+│   │   │
+│   │   ├── services/
+│   │   │   ├── api.js
+│   │   │   ├── authService.js
+│   │   │   ├── expenseService.js
+│   │   │   └── salaryService.js
+│   │   │
+│   │   ├── context/
+│   │   │   ├── AuthContext.js
+│   │   │   └── ThemeContext.js
+│   │   │
+│   │   ├── hooks/
+│   │   │   ├── useAuth.js
+│   │   │   └── useFetch.js
+│   │   │
+│   │   ├── styles/
+│   │   │   ├── global.css
+│   │   │   └── theme.css
+│   │   │
+│   │   ├── App.js
+│   │   └── index.js
+│   │
+│   ├── .env
+│   ├── package.json
+│   └── README.md
+│
+├── backend/                           # Flask backend (APIs + ML)
+│   ├── app.py
+│   ├── config.py
+│   │
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── user.py
+│   │   ├── salary.py
+│   │   └── expense.py
+│   │
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── auth_routes.py
+│   │   ├── expense_routes.py
+│   │   ├── salary_routes.py
+│   │   ├── user_routes.py
+│   │   ├── prediction_routes.py
+│   │   └── dashboard_routes.py
+│   │
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── database.py
+│   │   ├── helpers.py
+│   │   └── ml_model.py
+│   │
+│   ├── static/
+│   ├── templates/
+│   │
+│   ├── migrations/
+│   ├── tests/
+│   │   ├── test_auth.py
+│   │   ├── test_expense.py
+│   │   └── test_salary.py
+│   │
+│   ├── requirements.txt
+│   └── wsgi.py
+│
+├── dashboard/                         # Streamlit dashboard (analysis)
+│   ├── dashboard_app.py
+│   │
+│   ├── pages/
+│   │   ├── 1_Expense_Analysis.py
+│   │   ├── 2_Salary_vs_Expenses.py
+│   │   └── 3_Savings_Prediction.py
+│   │
+│   ├── utils/
+│   │   ├── api_client.py
+│   │   └── charts.py
+│   │
+│   └── requirements.txt
+│
+├── data/                              # Data (CSV uploads, ML models, backups)
+│   ├── sample_expenses.csv
+│   └── models/
+│       └── expense_forecast.pkl
+│
+├── README.md
+└── .gitignore
