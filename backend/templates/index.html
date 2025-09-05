@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Personal Salary Management System - Track income, manage expenses, and get AI-powered financial insights. Take control of your finances today.">
+    <meta name="keywords" content="salary management, expense tracking, financial dashboard, AI recommendations, personal finance">
+    <meta name="author" content="Personal Salary Manager">
+    <link rel="canonical" href="/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="/">
+    <meta property="og:title" content="Personal Salary Manager - Smart Financial Management">
+    <meta property="og:description" content="Track income, manage expenses, and get AI-powered insights to optimize your financial health.">
+    <meta property="og:image" content="/static/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="/">
+    <meta property="twitter:title" content="Personal Salary Manager - Smart Financial Management">
+    <meta property="twitter:description" content="Track income, manage expenses, and get AI-powered insights to optimize your financial health.">
+    <meta property="twitter:image" content="/static/twitter-image.jpg">
+
+    <title>Smart Financial Management</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        /* Dark Theme Variables (Default) */
+        .dark-theme {
+            --bs-body-bg: #0d1117;
+            --bs-body-color: #f0f6fc;
+            --bs-primary: #238be6;
+            --bs-secondary: #21d4a7;
+            --bs-border-color: #30363d;
+            --bs-card-bg: #161b22;
+            --bs-navbar-bg: rgba(13, 17, 23, 0.95);
+            --bs-navbar-color: #f0f6fc;
+            --bs-navbar-brand-color: #f0f6fc;
+            --bs-navbar-link-color: #e6edf3;
+            --bs-navbar-link-hover-color: #238be6;
+            --text-muted: #8b949e;
+            --footer-bg: #0a0e13;
+        }
+
+        /* Light Theme Variables */
+        .light-theme {
+            --bs-body-bg: #ffffff;
+            --bs-body-color: #212529;
+            --bs-primary: #007BFF;
+            --bs-secondary: #6c757d;
+            --bs-border-color: #dee2e6;
+            --bs-card-bg: #f8f9fa;
+            --bs-navbar-bg: rgba(255, 255, 255, 0.98);
+            --bs-navbar-color: #212529;
+            --bs-navbar-brand-color: #007BFF;
+            --bs-navbar-link-color: #495057;
+            --bs-navbar-link-hover-color: #007BFF;
+            --text-muted: #6c757d;
+            --footer-bg: #f8f9fa;
+        }
+
+        :root {
+            --bs-dark: var(--bs-body-bg);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                color-scheme: dark;
+            }
+        }
+
+        body {
+            background-color: var(--bs-body-bg);
+            color: var(--bs-body-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--bs-primary);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 1000;
+            border-radius: 4px;
+        }
+
+        .skip-link:focus {
+            top: 6px;
+        }
+
+        /* Optimized Navbar Styles */
+        .navbar {
+            background-color: var(--bs-navbar-bg) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--bs-border-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 0;
+        }
+
+        .light-theme .navbar {
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--bs-navbar-brand-color) !important;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .navbar-brand:hover {
+            color: var(--bs-primary) !important;
+            transform: translateY(-1px);
+        }
+
+        /* Navbar Links Optimization */
+        .navbar-nav .nav-link {
+            color: var(--bs-navbar-link-color) !important;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.6rem 1rem !important;
+            margin: 0 0.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link:focus {
+            color: var(--bs-navbar-link-hover-color) !important;
+            background-color: rgba(35, 139, 230, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .light-theme .navbar-nav .nav-link:hover,
+        .light-theme .navbar-nav .nav-link:focus {
+            background-color: rgba(0, 123, 255, 0.08);
+        }
+
+        /* Active nav link */
+        .navbar-nav .nav-link.active,
+        .navbar-nav .nav-link[aria-current="page"] {
+            color: var(--bs-primary) !important;
+            background-color: rgba(35, 139, 230, 0.15);
+            font-weight: 600;
+        }
+
+        .light-theme .navbar-nav .nav-link.active,
+        .light-theme .navbar-nav .nav-link[aria-current="page"] {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+        /* Theme Switch Button Optimization */
+        .theme-switch {
+            background: var(--bs-card-bg);
+            border: 2px solid var(--bs-border-color);
+            color: var(--bs-navbar-link-color);
+            padding: 0.5rem 0.8rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .theme-switch:hover {
+            background-color: var(--bs-primary);
+            border-color: var(--bs-primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(35, 139, 230, 0.3);
+        }
+
+        .light-theme .theme-switch:hover {
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Navbar Toggler for Mobile */
+        .navbar-toggler {
+            border: 2px solid var(--bs-border-color);
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.25rem rgba(35, 139, 230, 0.25);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28240, 246, 252, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .light-theme .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2833, 37, 41, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* Mobile navbar improvements */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background: var(--bs-navbar-bg);
+                border-radius: 12px;
+                margin-top: 1rem;
+                padding: 1rem;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            }
+
+            .light-theme .navbar-collapse {
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            }
+
+            .navbar-nav .nav-link {
+                margin: 0.3rem 0;
+                text-align: center;
+            }
+
+            .theme-switch {
+                margin: 1rem auto 0;
+                width: fit-content;
+            }
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--bs-body-bg) 0%, var(--bs-card-bg) 100%);
+            padding: 120px 0 100px;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s ease;
+        }
+
+        .light-theme .hero-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="%23238be6" opacity="0.1"/><circle cx="80" cy="80" r="2" fill="%2321d4a7" opacity="0.1"/><circle cx="40" cy="60" r="1.5" fill="%23238be6" opacity="0.1"/><circle cx="70" cy="30" r="1.5" fill="%2321d4a7" opacity="0.1"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--bs-primary) 0%, #1e7ddb 100%);
+            border: none;
+            padding: 12px 32px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .light-theme .btn-primary {
+            background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+        }
+
+        .btn-primary:hover, .btn-primary:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(35, 139, 230, 0.3);
+            background: linear-gradient(135deg, #1e7ddb 0%, var(--bs-primary) 100%);
+        }
+
+        .light-theme .btn-primary:hover, .light-theme .btn-primary:focus {
+            background: linear-gradient(135deg, #0056b3 0%, #007BFF 100%);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn-outline-secondary {
+            color: var(--bs-secondary);
+            border-color: var(--bs-secondary);
+            padding: 12px 32px;
+            font-weight: 600;
+        }
+
+        .btn-outline-secondary:hover, .btn-outline-secondary:focus {
+            background-color: var(--bs-secondary);
+            border-color: var(--bs-secondary);
+            color: var(--bs-dark);
+        }
+
+        .feature-card {
+            background: var(--bs-card-bg);
+            border: 1px solid var(--bs-border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            height: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .light-theme .feature-card {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--bs-primary), var(--bs-secondary));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--bs-primary);
+        }
+
+        .dark-theme .feature-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .light-theme .feature-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .icon-salary { background: linear-gradient(135deg, var(--bs-primary), #1e7ddb); }
+        .icon-expense { background: linear-gradient(135deg, #21d4a7, #1bb592); }
+        .icon-dashboard { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .icon-ai { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+
+        .light-theme .icon-salary { background: linear-gradient(135deg, #007BFF, #0056b3); }
+        .light-theme .icon-expense { background: linear-gradient(135deg, #28a745, #1e7e34); }
+        .light-theme .icon-dashboard { background: linear-gradient(135deg, #ffc107, #e0a800); }
+        .light-theme .icon-ai { background: linear-gradient(135deg, #6f42c1, #5a32a3); }
+
+        .steps-section {
+            background: var(--bs-card-bg);
+            border-top: 1px solid var(--bs-border-color);
+            border-bottom: 1px solid var(--bs-border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-card {
+            background: var(--bs-card-bg);
+            border: 1px solid var(--bs-border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .light-theme .testimonial-card {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .star-rating {
+            color: #ffc107;
+            margin-bottom: 1rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bs-primary);
+            color: white;
+            border: none;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-to-top:hover {
+            background: var(--bs-secondary);
+            transform: translateY(-3px);
+        }
+
+        .notice-banner {
+            background: linear-gradient(90deg, var(--bs-primary), var(--bs-secondary));
+            color: white;
+            padding: 12px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .notice-close {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .footer {
+            background: var(--footer-bg);
+            border-top: 1px solid var(--bs-border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--bs-primary);
+        }
+
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+
+        /* Focus styles for accessibility */
+        .btn:focus, .nav-link:focus, a:focus {
+            outline: 2px solid var(--bs-primary);
+            outline-offset: 2px;
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .utility-mt-6 { margin-top: 4rem; }
+        .utility-mb-6 { margin-bottom: 4rem; }
+        .utility-py-6 { padding: 4rem 0; }
+    </style>
+</head>
+
+<body class="dark-theme">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Navigation -->
+    <header>
+        <nav class="navbar navbar-expand-lg sticky-top" role="navigation" aria-label="Main navigation">
+            <div class="container">
+                <a class="navbar-brand" href="/">💰 Personal Salary Manager</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/" aria-current="page">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/salary-input">Salary</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('expenses') }}">Expenses</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/dashboard">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/about">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <button class="theme-switch" id="themeSwitch" onclick="toggleTheme()" aria-label="Toggle theme">
+                                <i class="bi bi-sun-fill" id="themeIcon"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <section class="hero-section">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h1 class="hero-title">Master Your Financial Future</h1>
+                        <p class="lead mb-4">AI-powered salary management that transforms how you track income, control expenses, and optimize your financial health. Smart insights, effortless tracking.</p>
+                        <div class="d-flex flex-wrap gap-3">
+                            <a href="/salary-input" class="btn btn-primary btn-lg">Start Managing <i class="bi bi-arrow-right ms-2"></i></a>
+                            <a href="/dashboard" class="btn btn-outline-secondary btn-lg">View Demo <i class="bi bi-play-circle ms-2"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="text-center mt-5 mt-lg-0">
+                            <div class="position-relative d-inline-block">
+                                <i class="bi bi-graph-up text-primary" style="font-size: 8rem; opacity: 0.8;"></i>
+                                <div class="position-absolute top-50 start-50 translate-middle">
+                                    <i class="bi bi-currency-dollar text-secondary" style="font-size: 3rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="utility-py-6" id="features">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center mb-5">
+                        <h2 class="display-5 fw-bold mb-3">Everything You Need to Win Financially</h2>
+                        <p class="lead text-muted">Comprehensive tools designed for modern financial management. No spreadsheets, no complexity—just results.</p>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card">
+                            <div class="feature-icon icon-salary">
+                                <i class="bi bi-cash-stack text-white"></i>
+                            </div>
+                            <h4 class="fw-bold mb-3">Salary Management</h4>
+                            <p class="text-muted">Input and track multiple income sources. Handle bonuses, deductions, and complex pay structures with ease.</p>
+                            <a href="/salary-input" class="btn btn-sm btn-outline-primary mt-3">Manage Salary <i class="bi bi-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card">
+                            <div class="feature-icon icon-expense">
+                                <i class="bi bi-receipt text-white"></i>
+                            </div>
+                            <h4 class="fw-bold mb-3">Expense Tracking</h4>
+                            <p class="text-muted">Manual entry or bulk CSV upload. Categorize spending automatically and identify patterns instantly.</p>
+                            <a href="/expense-input" class="btn btn-sm btn-outline-primary mt-3">Track Expenses <i class="bi bi-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card">
+                            <div class="feature-icon icon-dashboard">
+                                <i class="bi bi-graph-up-arrow text-white"></i>
+                            </div>
+                            <h4 class="fw-bold mb-3">Interactive Dashboard</h4>
+                            <p class="text-muted">Real-time visualizations, spending trends, and financial health metrics. See your money flow clearly.</p>
+                            <a href="/dashboard" class="btn btn-sm btn-outline-primary mt-3">View Dashboard <i class="bi bi-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card">
+                            <div class="feature-icon icon-ai">
+                                <i class="bi bi-robot text-white"></i>
+                            </div>
+                            <h4 class="fw-bold mb-3">AI Recommendations</h4>
+                            <p class="text-muted">Smart predictions and personalized saving strategies. Get actionable insights to optimize your finances.</p>
+                            <a href="/dashboard" class="btn btn-sm btn-outline-primary mt-3">Get Insights <i class="bi bi-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="steps-section utility-py-6" id="how-it-works">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center mb-5">
+                        <h2 class="display-5 fw-bold mb-3">How It Works</h2>
+                        <p class="lead text-muted">Get started in minutes. Financial control in days. Life-changing results in months.</p>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3 text-center">
+                        <div class="step-number mx-auto">1</div>
+                        <h4 class="fw-bold mb-3">Input Your Salary</h4>
+                        <p class="text-muted">Add your income sources, including base salary, bonuses, and other earnings. Set up once, track forever.</p>
+                    </div>
+                    <div class="col-md-6 col-lg-3 text-center">
+                        <div class="step-number mx-auto">2</div>
+                        <h4 class="fw-bold mb-3">Track Daily Expenses</h4>
+                        <p class="text-muted">Log expenses manually or upload CSV files. Automatic categorization saves you time and effort.</p>
+                    </div>
+                    <div class="col-md-6 col-lg-3 text-center">
+                        <div class="step-number mx-auto">3</div>
+                        <h4 class="fw-bold mb-3">Analyze Patterns</h4>
+                        <p class="text-muted">View interactive charts and insights. Understand where your money goes and identify improvement areas.</p>
+                    </div>
+                    <div class="col-md-6 col-lg-3 text-center">
+                        <div class="step-number mx-auto">4</div>
+                        <h4 class="fw-bold mb-3">Optimize & Save</h4>
+                        <p class="text-muted">Follow AI-powered recommendations to cut waste, increase savings, and achieve your financial goals.</p>
+                    </div>
+                </div>
+            </div>
+
+        <!-- CTA Section -->
+        <section class="utility-py-6 bg-dark">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center">
+                        <h2 class="display-5 fw-bold mb-3">Ready to Master Your Money?</h2>
+                        <p class="lead mb-4">Join thousands who've taken control of their finances. Start your journey to financial freedom today.</p>
+                        <div class="d-flex flex-wrap justify-content-center gap-3">
+                            <a href="/salary-input" class="btn btn-primary btn-lg">Get Started Now <i class="bi bi-rocket ms-2"></i></a>
+                            <a href="/about" class="btn btn-outline-secondary btn-lg">Learn More <i class="bi bi-info-circle ms-2"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    
+    <!-- Footer -->
+    <footer class="footer utility-py-6" role="contentinfo">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <span class="h5 fw-bold">💰 Personal Salary Manager</span>
+                    </div>
+                    <p class="text-muted mb-3">Smart financial management for modern professionals. Track, analyze, and optimize your money with AI-powered insights.</p>
+                    <div class="footer-links">
+                        <a href="mailto:contact@salarymanager.com" class="me-3" aria-label="Email contact">
+                            <i class="bi bi-envelope me-1"></i>Contact
+                        </a>
+                        <a href="#" class="me-3" aria-label="Privacy policy">Privacy</a>
+                        <a href="#" aria-label="Terms of service">Terms</a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3">
+                    <h6 class="fw-bold mb-3">Features</h6>
+                    <div class="footer-links d-flex flex-column">
+                        <a href="/salary-input" class="mb-2">Salary Input</a>
+                        <a href="/expense-input" class="mb-2">Expense Tracking</a>
+                        <a href="/expense-upload" class="mb-2">CSV Upload</a>
+                        <a href="/dashboard" class="mb-2">Dashboard</a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3">
+                    <h6 class="fw-bold mb-3">Company</h6>
+                    <div class="footer-links d-flex flex-column">
+                        <a href="/about" class="mb-2">About Us</a>
+                        <a href="#" class="mb-2">Blog</a>
+                        <a href="#" class="mb-2">Careers</a>
+                        <a href="#" class="mb-2">Support</a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h6 class="fw-bold mb-3">Stay Updated</h6>
+                    <p class="text-muted mb-3">Get the latest financial tips and product updates.</p>
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" placeholder="Enter your email" aria-label="Email for newsletter">
+                        <button class="btn btn-primary" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="text-muted mb-0">&copy; Vishal Baghel.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="footer-links">
+                        <a href="#" class="me-3" aria-label="Facebook">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="me-3" aria-label="Twitter">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="#" class="me-3" aria-label="LinkedIn">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        <a href="#" aria-label="GitHub">
+                            <i class="bi bi-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+ <script>
+function toggleTheme() {
+    const body = document.body;
+    const icon = document.getElementById("themeIcon");
+
+    // Toggle between dark-theme and light-theme
+    if (body.classList.contains("dark-theme")) {
+        body.classList.remove("dark-theme");
+        body.classList.add("light-theme");
+        icon.classList.remove("bi-sun-fill");
+        icon.classList.add("bi-moon-fill");
+    } else {
+        body.classList.remove("light-theme");
+        body.classList.add("dark-theme");
+        icon.classList.remove("bi-moon-fill");
+        icon.classList.add("bi-sun-fill");
+    }
+}
+</script>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()" aria-label="Back to top">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+   
+   
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous" defer></script>
+
+    <script>
+        // Back to top functionality
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'flex';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>

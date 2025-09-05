@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Track your monthly expenses - Manual entry or CSV upload. Smart expense management made easy.">
+    <meta name="keywords" content="expense tracking, salary expenses, CSV upload, financial management">
+    <meta name="author" content="Personal Salary Manager">
+    <link rel="canonical" href="/expense-input">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="/expense-input">
+    <meta property="og:title" content="Expense Input - Personal Salary Manager">
+    <meta property="og:description" content="Track your monthly expenses with manual entry or CSV upload. Smart financial management.">
+    <meta property="og:image" content="/static/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="/expense-input">
+    <meta property="twitter:title" content="Expense Input - Personal Salary Manager">
+    <meta property="twitter:description" content="Track your monthly expenses with manual entry or CSV upload. Smart financial management.">
+    <meta property="twitter:image" content="/static/twitter-image.jpg">
+
+    <title>Expense Input - Smart Financial Management</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        /* Dark Theme Variables (Default) */
+        .dark-theme {
+            --bs-body-bg: #0d1117;
+            --bs-body-color: #f0f6fc;
+            --bs-primary: #238be6;
+            --bs-secondary: #21d4a7;
+            --bs-border-color: #30363d;
+            --bs-card-bg: #161b22;
+            --bs-navbar-bg: rgba(13, 17, 23, 0.95);
+            --bs-navbar-color: #f0f6fc;
+            --bs-navbar-brand-color: #f0f6fc;
+            --bs-navbar-link-color: #e6edf3;
+            --bs-navbar-link-hover-color: #238be6;
+            --text-muted: #8b949e;
+            --footer-bg: #0a0e13;
+            --form-bg: #21262d;
+            --input-bg: #161b22;
+            --input-border: #30363d;
+        }
+
+        /* Light Theme Variables */
+        .light-theme {
+            --bs-body-bg: #ffffff;
+            --bs-body-color: #212529;
+            --bs-primary: #007BFF;
+            --bs-secondary: #6c757d;
+            --bs-border-color: #dee2e6;
+            --bs-card-bg: #f8f9fa;
+            --bs-navbar-bg: rgba(255, 255, 255, 0.98);
+            --bs-navbar-color: #212529;
+            --bs-navbar-brand-color: #007BFF;
+            --bs-navbar-link-color: #495057;
+            --bs-navbar-link-hover-color: #007BFF;
+            --text-muted: #6c757d;
+            --footer-bg: #f8f9fa;
+            --form-bg: #ffffff;
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+        }
+
+        :root {
+            --bs-dark: var(--bs-body-bg);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                color-scheme: dark;
+            }
+        }
+
+        body {
+            background-color: var(--bs-body-bg);
+            color: var(--bs-body-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--bs-primary);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 1000;
+            border-radius: 4px;
+        }
+
+        .skip-link:focus {
+            top: 6px;
+        }
+
+        /* Optimized Navbar Styles */
+        .navbar {
+            background-color: var(--bs-navbar-bg) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--bs-border-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 0;
+        }
+
+        .light-theme .navbar {
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--bs-navbar-brand-color) !important;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .navbar-brand:hover {
+            color: var(--bs-primary) !important;
+            transform: translateY(-1px);
+        }
+
+        /* Navbar Links Optimization */
+        .navbar-nav .nav-link {
+            color: var(--bs-navbar-link-color) !important;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.6rem 1rem !important;
+            margin: 0 0.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link:focus {
+            color: var(--bs-navbar-link-hover-color) !important;
+            background-color: rgba(35, 139, 230, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .light-theme .navbar-nav .nav-link:hover,
+        .light-theme .navbar-nav .nav-link:focus {
+            background-color: rgba(0, 123, 255, 0.08);
+        }
+
+        /* Active nav link */
+        .navbar-nav .nav-link.active,
+        .navbar-nav .nav-link[aria-current="page"] {
+            color: var(--bs-primary) !important;
+            background-color: rgba(35, 139, 230, 0.15);
+            font-weight: 600;
+        }
+
+        .light-theme .navbar-nav .nav-link.active,
+        .light-theme .navbar-nav .nav-link[aria-current="page"] {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+        /* Theme Switch Button Optimization */
+        .theme-switch {
+            background: var(--bs-card-bg);
+            border: 2px solid var(--bs-border-color);
+            color: var(--bs-navbar-link-color);
+            padding: 0.5rem 0.8rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .theme-switch:hover {
+            background-color: var(--bs-primary);
+            border-color: var(--bs-primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(35, 139, 230, 0.3);
+        }
+
+        .light-theme .theme-switch:hover {
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Navbar Toggler for Mobile */
+        .navbar-toggler {
+            border: 2px solid var(--bs-border-color);
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.25rem rgba(35, 139, 230, 0.25);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28240, 246, 252, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .light-theme .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2833, 37, 41, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* Mobile navbar improvements */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background: var(--bs-navbar-bg);
+                border-radius: 12px;
+                margin-top: 1rem;
+                padding: 1rem;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            }
+
+            .light-theme .navbar-collapse {
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            }
+
+            .navbar-nav .nav-link {
+                margin: 0.3rem 0;
+                text-align: center;
+            }
+
+            .theme-switch {
+                margin: 1rem auto 0;
+                width: fit-content;
+            }
+        }
+
+        /* Page Header Section */
+        .page-header {
+            background: linear-gradient(135deg, var(--bs-body-bg) 0%, var(--bs-card-bg) 100%);
+            padding: 80px 0 60px;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s ease;
+        }
+
+        .light-theme .page-header {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="%23238be6" opacity="0.1"/><circle cx="80" cy="80" r="2" fill="%2321d4a7" opacity="0.1"/><circle cx="40" cy="60" r="1.5" fill="%23238be6" opacity="0.1"/><circle cx="70" cy="30" r="1.5" fill="%2321d4a7" opacity="0.1"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2.2rem;
+            }
+        }
+
+        /* Form Styles */
+        .expense-form-container {
+            background: var(--form-bg);
+            border: 1px solid var(--bs-border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .light-theme .expense-form-container {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-control, .form-select {
+            background-color: var(--input-bg);
+            border: 2px solid var(--input-border);
+            color: var(--bs-body-color);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: var(--input-bg);
+            border-color: var(--bs-primary);
+            color: var(--bs-body-color);
+            box-shadow: 0 0 0 0.25rem rgba(35, 139, 230, 0.15);
+        }
+
+        .light-theme .form-control:focus, .light-theme .form-select:focus {
+            box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.15);
+        }
+
+        .expense-row {
+            background: var(--bs-card-bg);
+            border: 1px solid var(--bs-border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .expense-row:hover {
+            border-color: var(--bs-primary);
+            box-shadow: 0 4px 16px rgba(35, 139, 230, 0.1);
+        }
+
+        .remove-row-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #dc3545;
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .remove-row-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+        .add-row-btn {
+            background: linear-gradient(135deg, var(--bs-secondary) 0%, #1bb592 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .add-row-btn:hover {
+            background: linear-gradient(135deg, #1bb592 0%, var(--bs-secondary) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(33, 212, 167, 0.3);
+        }
+
+        /* CSV Upload Styles */
+        .csv-upload-area {
+            border: 2px dashed var(--bs-border-color);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: var(--form-bg);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .csv-upload-area:hover {
+            border-color: var(--bs-primary);
+            background: var(--bs-card-bg);
+        }
+
+        .csv-upload-area.dragover {
+            border-color: var(--bs-primary);
+            background: rgba(35, 139, 230, 0.1);
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .csv-info {
+            background: rgba(33, 212, 167, 0.1);
+            border: 1px solid var(--bs-secondary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--bs-primary) 0%, #1e7ddb 100%);
+            border: none;
+            padding: 12px 32px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .light-theme .btn-primary {
+            background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+        }
+
+        .btn-primary:hover, .btn-primary:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(35, 139, 230, 0.3);
+            background: linear-gradient(135deg, #1e7ddb 0%, var(--bs-primary) 100%);
+        }
+
+        .light-theme .btn-primary:hover, .light-theme .btn-primary:focus {
+            background: linear-gradient(135deg, #0056b3 0%, #007BFF 100%);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn-outline-secondary {
+            color: var(--bs-secondary);
+            border-color: var(--bs-secondary);
+            padding: 12px 32px;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+
+        .btn-outline-secondary:hover, .btn-outline-secondary:focus {
+            background-color: var(--bs-secondary);
+            border-color: var(--bs-secondary);
+            color: var(--bs-dark);
+        }
+
+        /* Tab Styles */
+        .nav-tabs .nav-link {
+            background: transparent;
+            border: 2px solid var(--bs-border-color);
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 1rem 2rem;
+            margin-right: 0.5rem;
+            border-radius: 12px 12px 0 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--bs-primary);
+            border-color: var(--bs-primary);
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--bs-card-bg);
+            border-color: var(--bs-primary);
+            color: var(--bs-primary);
+            border-bottom-color: var(--bs-card-bg);
+        }
+
+        .tab-content {
+            background: var(--bs-card-bg);
+            border: 2px solid var(--bs-border-color);
+            border-top: none;
+            border-radius: 0 12px 12px 12px;
+            padding: 2rem;
+        }
+
+        .footer {
+            background: var(--footer-bg);
+            border-top: 1px solid var(--bs-border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            margin-top: 4rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--bs-primary);
+        }
+
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bs-primary);
+            color: white;
+            border: none;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-to-top:hover {
+            background: var(--bs-secondary);
+            transform: translateY(-3px);
+        }
+
+        /* Focus styles for accessibility */
+        .btn:focus, .nav-link:focus, a:focus, .form-control:focus {
+            outline: 2px solid var(--bs-primary);
+            outline-offset: 2px;
+        }
+
+        /* Utility classes */
+        .utility-py-6 { padding: 4rem 0; }
+    </style>
+</head>
+
+<body class="dark-theme">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Navigation -->
+    <header>
+        <nav class="navbar navbar-expand-lg sticky-top" role="navigation" aria-label="Main navigation">
+            <div class="container">
+                <a class="navbar-brand" href="/">💰 Personal Salary Manager</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/salary-input">Salary</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/expense-input" aria-current="page">Expenses</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/dashboard">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/about">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <button class="theme-switch" id="themeSwitch" onclick="toggleTheme()" aria-label="Toggle theme">
+                                <i class="bi bi-sun-fill" id="themeIcon"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Page Header -->
+        <section class="page-header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center">
+                        <h1 class="page-title">Track Your Expenses</h1>
+                        <p class="lead mb-4">Enter your monthly salary expenses manually or upload a CSV file. Minimum 10 records, maximum 31 records required.</p>
+                        <div class="d-flex justify-content-center">
+                            <i class="bi bi-receipt-cutoff text-primary" style="font-size: 4rem; opacity: 0.8;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Expense Input Section -->
+        <section class="utility-py-6">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <!-- Tab Navigation -->
+                        <ul class="nav nav-tabs" id="expenseInputTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="manual-tab" data-bs-toggle="tab" data-bs-target="#manual" type="button" role="tab" aria-controls="manual" aria-selected="true">
+                                    <i class="bi bi-pencil-square me-2"></i>Manual Entry
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="csv-tab" data-bs-toggle="tab" data-bs-target="#csv" type="button" role="tab" aria-controls="csv" aria-selected="false">
+                                    <i class="bi bi-file-earmark-arrow-up me-2"></i>CSV Upload
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="expenseInputTabContent">
+                            <!-- Manual Entry Tab -->
+                            <div class="tab-pane fade show active" id="manual" role="tabpanel" aria-labelledby="manual-tab">
+                                <form id="manualExpenseForm">
+                                    <div class="mb-4">
+                                        <h4 class="fw-bold mb-3">Manual Expense Entry</h4>
+                                        <p class="text-muted mb-4">Add your monthly salary expenses one by one. You can add between 10-31 expense records.</p>
+                                        
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="badge bg-primary fs-6" id="recordCount">Records: 0/31</span>
+                                            <button type="button" class="add-row-btn" onclick="addExpenseRow()">
+                                                <i class="bi bi-plus-circle me-2"></i>Add Expense
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div id="expenseRowsContainer">
+                                        <!-- Expense rows will be added here dynamically -->
+                                    </div>
+
+                                    <div class="d-flex gap-3 justify-content-end mt-4">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="clearAllRows()">
+                                            <i class="bi bi-trash me-2"></i>Clear All
+                                        </button>
+                                        <button type="submit" class="btn btn-primary" id="submitManualBtn" disabled>
+                                            <i class="bi bi-check-circle me-2"></i>Submit Expenses
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- CSV Upload Tab -->
+                            <div class="tab-pane fade" id="csv" role="tabpanel" aria-labelledby="csv-tab">
+                                <div class="mb-4">
+                                    <h4 class="fw-bold mb-3">CSV Upload</h4>
+                                    <p class="text-muted mb-4">Upload a CSV file containing your expense data. The file should have 10-31 records.</p>
+                                </div>
+
+                                <form id="csvUploadForm">
+                                    <div class="csv-upload-area" onclick="document.getElementById('csvFile').click()">
+                                        <input type="file" id="csvFile" name="csvFile" accept=".csv" class="file-input" onchange="handleFileSelect(event)">
+                                        <div class="upload-content">
+                                            <i class="bi bi-cloud-arrow-up text-primary mb-3" style="font-size: 3rem;"></i>
+                                            <h5 class="fw-bold mb-2">Click to upload or drag and drop</h5>
+                                            <p class="text-muted mb-0">CSV files only (Max 5MB)</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="csv-info">
+                                        <h6 class="fw-bold mb-2"><i class="bi bi-info-circle me-2"></i>CSV Format Requirements:</h6>
+                                        <ul class="mb-2">
+                                            <li><strong>Columns:</strong> Amount, Description, Date, Time (optional)</li>
+                                            <li><strong>Records:</strong> Minimum 10, Maximum 31</li>
+                                            <li><strong>Date format:</strong> YYYY-MM-DD or MM/DD/YYYY</li>
+                                            <li><strong>Time format:</strong> HH:MM (24-hour format, optional)</li>
+                                        </ul>
+                                        <p class="mb-0 text-muted small">Example: 45.50, Lunch at cafe, 2024-01-15, 12:30</p>
+                                    </div>
+
+                                    <div id="csvPreview" class="mt-3" style="display: none;">
+                                        <h6 class="fw-bold">File Preview:</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped" id="csvPreviewTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Amount</th>
+                                                        <th>Description</th>
+                                                        <th>Date</th>
+                                                        <th>Time</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="csvPreviewBody">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="badge bg-info fs-6" id="csvRecordCount">Records: 0</span>
+                                            <div class="d-flex gap-2">
+                                                <button type="button" class="btn btn-outline-secondary" onclick="clearCsvFile()">
+                                                    <i class="bi bi-x-circle me-2"></i>Remove File
+                                                </button>
+                                                <button type="submit" class="btn btn-primary" id="submitCsvBtn" disabled>
+                                                    <i class="bi bi-upload me-2"></i>Upload Expenses
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer utility-py-6" role="contentinfo">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <span class="h5 fw-bold">💰 Personal Salary Manager</span>
+                    </div>
+                    <p class="text-muted mb-3">Smart financial management for modern professionals. Track, analyze, and optimize your money with AI-powered insights.</p>
+                    <div class="footer-links">
+                        <a href="mailto:contact@salarymanager.com" class="me-3" aria-label="Email contact">
+                            <i class="bi bi-envelope me-1"></i>Contact
+                        </a>
+                        <a href="#" class="me-3" aria-label="Privacy policy">Privacy</a>
+                        <a href="#" aria-label="Terms of service">Terms</a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3">
+                    <h6 class="fw-bold mb-3">Features</h6>
+                    <div class="footer-links d-flex flex-column">
+                        <a href="/salary-input" class="mb-2">Salary Input</a>
+                        <a href="/expense-input" class="mb-2">Expense Tracking</a>
+                        <a href="/expense-upload" class="mb-2">CSV Upload</a>
+                        <a href="/dashboard" class="mb-2">Dashboard</a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3">
+                    <h6 class="fw-bold mb-3">Company</h6>
+                    <div class="footer-links d-flex flex-column">
+                        <a href="/about" class="mb-2">About Us</a>
+                        <a href="#" class="mb-2">Blog</a>
+                        <a href="#" class="mb-2">Careers</a>
+                        <a href="#" class="mb-2">Support</a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h6 class="fw-bold mb-3">Stay Updated</h6>
+                    <p class="text-muted mb-3">Get the latest financial tips and product updates.</p>
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" placeholder="Enter your email" aria-label="Email for newsletter">
+                        <button class="btn btn-primary" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="text-muted mb-0">&copy; Vishal Baghel.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="footer-links">
+                        <a href="#" class="me-3" aria-label="Facebook">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="me-3" aria-label="Twitter">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="#" class="me-3" aria-label="LinkedIn">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                        <a href="#" aria-label="GitHub">
+                            <i class="bi bi-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()" aria-label="Back to top">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous" defer></script>
+
+    <script>
+        let expenseRowCount = 0;
+        let csvData = null;
+
+        // Theme toggle function
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById("themeIcon");
+
+            if (body.classList.contains("dark-theme")) {
+                body.classList.remove("dark-theme");
+                body.classList.add("light-theme");
+                icon.classList.remove("bi-sun-fill");
+                icon.classList.add("bi-moon-fill");
+            } else {
+                body.classList.remove("light-theme");
+                body.classList.add("dark-theme");
+                icon.classList.remove("bi-moon-fill");
+                icon.classList.add("bi-sun-fill");
+            }
+        }
+
+        // Add expense row function
+        function addExpenseRow() {
+            if (expenseRowCount >= 31) {
+                alert('Maximum 31 expense records allowed.');
+                return;
+            }
+
+            expenseRowCount++;
+            const container = document.getElementById('expenseRowsContainer');
+            const rowId = `expense-row-${expenseRowCount}`;
+            
+            const rowHTML = `
+                <div class="expense-row" id="${rowId}">
+                    <button type="button" class="remove-row-btn" onclick="removeExpenseRow('${rowId}')" aria-label="Remove expense row">
+                        <i class="bi bi-x"></i>
+                    </button>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="amount-${expenseRowCount}" class="form-label">Amount *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" min="0" class="form-control amount-input" id="amount-${expenseRowCount}" name="amount[]" placeholder="0.00" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="description-${expenseRowCount}" class="form-label">Description *</label>
+                            <input type="text" class="form-control description-input" id="description-${expenseRowCount}" name="description[]" placeholder="Enter description" maxlength="100" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="date-${expenseRowCount}" class="form-label">Date *</label>
+                            <input type="date" class="form-control date-input" id="date-${expenseRowCount}" name="date[]" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="time-${expenseRowCount}" class="form-label">Time</label>
+                            <input type="time" class="form-control time-input" id="time-${expenseRowCount}" name="time[]">
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', rowHTML);
+            updateRecordCount();
+            
+            // Set today's date as default
+            document.getElementById(`date-${expenseRowCount}`).valueAsDate = new Date();
+            
+            // Add event listeners for validation
+            addRowValidationListeners(expenseRowCount);
+        }
+
+        // Remove expense row function
+        function removeExpenseRow(rowId) {
+            document.getElementById(rowId).remove();
+            expenseRowCount--;
+            updateRecordCount();
+        }
+
+        // Clear all rows
+        function clearAllRows() {
+            if (confirm('Are you sure you want to clear all expense entries?')) {
+                document.getElementById('expenseRowsContainer').innerHTML = '';
+                expenseRowCount = 0;
+                updateRecordCount();
+            }
+        }
+
+        // Update record count
+        function updateRecordCount() {
+            const countElement = document.getElementById('recordCount');
+            const submitBtn = document.getElementById('submitManualBtn');
+            
+            countElement.textContent = `Records: ${expenseRowCount}/31`;
+            
+            // Enable/disable submit button based on minimum records
+            if (expenseRowCount >= 10) {
+                submitBtn.disabled = false;
+                countElement.className = 'badge bg-success fs-6';
+            } else if (expenseRowCount > 0) {
+                submitBtn.disabled = true;
+                countElement.className = 'badge bg-warning fs-6';
+            } else {
+                submitBtn.disabled = true;
+                countElement.className = 'badge bg-primary fs-6';
+            }
+        }
+
+        // Add validation listeners to row
+        function addRowValidationListeners(rowNumber) {
+            const inputs = document.querySelectorAll(`#expense-row-${rowNumber} input[required]`);
+            inputs.forEach(input => {
+                input.addEventListener('input', validateForm);
+            });
+        }
+
+        // Validate form
+        function validateForm() {
+            const submitBtn = document.getElementById('submitManualBtn');
+            const rows = document.querySelectorAll('.expense-row');
+            let validRows = 0;
+            
+            rows.forEach(row => {
+                const requiredInputs = row.querySelectorAll('input[required]');
+                let rowValid = true;
+                
+                requiredInputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        rowValid = false;
+                    }
+                });
+                
+                if (rowValid) validRows++;
+            });
+            
+            submitBtn.disabled = validRows < 10;
+        }
+
+        // Handle CSV file selection
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+                alert('Please select a valid CSV file.');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                alert('File size must be less than 5MB.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    parseCsvData(e.target.result);
+                } catch (error) {
+                    alert('Error reading CSV file. Please check the format.');
+                    console.error(error);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Parse CSV data
+        function parseCsvData(csvText) {
+            const lines = csvText.trim().split('\n');
+            const data = [];
+            
+            // Skip header row if it exists
+            let startIndex = 0;
+            const firstLine = lines[0].toLowerCase();
+            if (firstLine.includes('amount') || firstLine.includes('description') || firstLine.includes('date')) {
+                startIndex = 1;
+            }
+            
+            for (let i = startIndex; i < lines.length; i++) {
+                const row = lines[i].split(',').map(cell => cell.trim().replace(/^"|"$/g, ''));
+                if (row.length >= 3) { // At least amount, description, date
+                    data.push({
+                        amount: parseFloat(row[0]) || 0,
+                        description: row[1] || '',
+                        date: row[2] || '',
+                        time: row[3] || ''
+                    });
+                }
+            }
+            
+            if (data.length < 10 || data.length > 31) {
+                alert(`CSV must contain between 10-31 records. Found ${data.length} records.`);
+                clearCsvFile();
+                return;
+            }
+            
+            csvData = data;
+            displayCsvPreview(data);
+        }
+
+        // Display CSV preview
+        function displayCsvPreview(data) {
+            const preview = document.getElementById('csvPreview');
+            const tbody = document.getElementById('csvPreviewBody');
+            const countElement = document.getElementById('csvRecordCount');
+            const submitBtn = document.getElementById('submitCsvBtn');
+            
+            tbody.innerHTML = '';
+            
+            data.slice(0, 5).forEach(row => { // Show first 5 rows
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.amount.toFixed(2)}</td>
+                    <td>${row.description}</td>
+                    <td>${row.date}</td>
+                    <td>${row.time || '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            if (data.length > 5) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="4" class="text-center text-muted">... and ${data.length - 5} more records</td>`;
+                tbody.appendChild(tr);
+            }
+            
+            countElement.textContent = `Records: ${data.length}`;
+            countElement.className = data.length >= 10 ? 'badge bg-success fs-6' : 'badge bg-warning fs-6';
+            
+            submitBtn.disabled = data.length < 10;
+            preview.style.display = 'block';
+        }
+
+        // Clear CSV file
+        function clearCsvFile() {
+            document.getElementById('csvFile').value = '';
+            document.getElementById('csvPreview').style.display = 'none';
+            document.getElementById('submitCsvBtn').disabled = true;
+            csvData = null;
+        }
+
+        // Handle drag and drop
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.querySelector('.csv-upload-area');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight(e) {
+                uploadArea.classList.add('dragover');
+            }
+            
+            function unhighlight(e) {
+                uploadArea.classList.remove('dragover');
+            }
+            
+            uploadArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0) {
+                    document.getElementById('csvFile').files = files;
+                    handleFileSelect({ target: { files: files } });
+                }
+            }
+            
+            // Add initial expense rows
+            for (let i = 0; i < 3; i++) {
+                addExpenseRow();
+            }
+        });
+
+        // Form submission handlers
+        document.getElementById('manualExpenseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const expenses = [];
+            
+            // Collect all expense data
+            const amounts = formData.getAll('amount[]');
+            const descriptions = formData.getAll('description[]');
+            const dates = formData.getAll('date[]');
+            const times = formData.getAll('time[]');
+            
+            for (let i = 0; i < amounts.length; i++) {
+                if (amounts[i] && descriptions[i] && dates[i]) {
+                    expenses.push({
+                        amount: parseFloat(amounts[i]),
+                        description: descriptions[i],
+                        date: dates[i],
+                        time: times[i] || ''
+                    });
+                }
+            }
+            
+            if (expenses.length >= 10) {
+                // Here you would send data to your backend
+                alert(`Successfully submitted ${expenses.length} expense records!`);
+                console.log('Manual expense data:', expenses);
+            }
+        });
+
+        document.getElementById('csvUploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (csvData && csvData.length >= 10) {
+                // Here you would send CSV data to your backend
+                alert(`Successfully uploaded ${csvData.length} expense records from CSV!`);
+                console.log('CSV expense data:', csvData);
+            }
+        });
+
+        // Back to top functionality
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'flex';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>
