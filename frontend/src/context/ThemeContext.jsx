@@ -11,7 +11,8 @@ export const useTheme = () => {
 }
 
 const ThemeProvider = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(true)
+  // Default light theme
+  const [isDarkMode, setIsDarkMode] = useState(false)
 
   useEffect(() => {
     // Apply theme class to body
@@ -22,13 +23,8 @@ const ThemeProvider = ({ children }) => {
     setIsDarkMode(!isDarkMode)
   }
 
-  const value = {
-    isDarkMode,
-    toggleTheme
-  }
-
   return (
-    <ThemeContext.Provider value={value}>
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   )

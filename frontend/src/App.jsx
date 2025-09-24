@@ -9,28 +9,37 @@ import About from './pages/About'
 import Footer from './components/Footer'
 import BackToTop from './components/BackToTop'
 import ThemeProvider from './context/ThemeContext'
+import { UserProvider } from './context/UserContext' // ✅ added
+import Login from './pages/Login'
+import Signup from './pages/SignUp'
+import Profile from './pages/Profile';
 import './App.css'
 
 function App() {
   return (
     <ThemeProvider>
-      <Router>
-        <div className="App">
-          <a href="#main-content" className="skip-link">Skip to main content</a>
-          <Navbar />
-          <main id="main-content">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/salary-input" element={<SalaryInput />} />
-              <Route path="/expenses" element={<Expenses />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/about" element={<About />} />
-            </Routes>
-          </main>
-          <Footer />
-          <BackToTop />
-        </div>
-      </Router>
+      <UserProvider> {/* ✅ Wrap the app with UserProvider */}
+        <Router>
+          <div className="App">
+            <a href="#main-content" className="skip-link">Skip to main content</a>
+            <Navbar />
+            <main id="main-content">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/salary-input" element={<SalaryInput />} />
+                <Route path="/expenses" element={<Expenses />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/signup" element={<Signup />} />
+                  <Route path="/profile" element={<Profile />} />
+                <Route path="/login" element={<Login />} />
+              </Routes>
+            </main>
+            <Footer />
+            <BackToTop />
+          </div>
+        </Router>
+      </UserProvider>
     </ThemeProvider>
   )
 }

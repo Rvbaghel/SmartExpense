@@ -32,15 +32,15 @@
   --footer-bg: #f8f9fa;
 }
 
-:root {
-  --bs-dark: var(--bs-body-bg);
-}
-
-@media (prefers-color-scheme: dark) {
   :root {
-    color-scheme: dark;
+    --bs-light: var(--bs-body-bg);
   }
-}
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      color-scheme: light;
+    }
+  }
 
 body {
   background-color: var(--bs-body-bg);
@@ -317,6 +317,15 @@ body {
 
 .feature-card:hover::before {
   transform: scaleX(1);
+}
+
+.auth-card {
+  background: var(--bs-card-bg, #fff);
+  border: 1px solid var(--bs-border-color, #ddd);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: none !important; /* no animation */
 }
 
 .feature-card:hover {
