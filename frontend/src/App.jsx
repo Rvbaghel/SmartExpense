@@ -1,20 +1,28 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import Home from './pages/Home'
-import SalaryInput from './pages/SalaryInput'
-import Expenses from './pages/Expenses'
-import Dashboard from './pages/Dashboard'
-import About from './pages/About'
-import Footer from './components/Footer'
-import BackToTop from './components/BackToTop'
-import ThemeProvider from './context/ThemeContext'
-import { UserProvider } from './context/UserContext'
-import Login from './pages/Login'
-import Signup from './pages/SignUp'
-import Profile from './pages/Profile'
-import Review from './pages/review'
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+// Components
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import BackToTop from './components/BackToTop';
+
+// Pages (ensure exact filenames)
+import Home from './pages/Home';
+import SalaryInput from './pages/SalaryInput';
+import Expenses from './pages/Expenses';
+import Dashboard from './pages/Dashboard';
+import About from './pages/About';
+import Login from './pages/Login';
+import Signup from './pages/SignUp';       // file must be SignUp.jsx
+import Profile from './pages/Profile';
+import Review from './pages/Review';       // file must be Review.jsx
+
+// Context
+import ThemeProvider from './context/ThemeContext';
+import { UserProvider } from './context/UserContext';
+
+// Styles
+import './App.css';
 
 function App() {
   return (
