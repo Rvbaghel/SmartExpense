@@ -1,10 +1,10 @@
 from flask import Flask
 from flask_cors import CORS
-from routers.auth_routes import auth_bp
-from routers.salary_routes import salary_bp
-from routers.category_routes import category_bp   # 👈 import category routes
-from routers.expense_router import expense_bp
-from routers.dashboard_routes import dashboard_bp
+from backend.routers.auth_routes import auth_bp
+from backend.routers.salary_routes import salary_bp
+from backend.routers.category_routes import category_bp
+from backend.routers.expense_router import expense_bp
+from backend.routers.dashboard_routes import dashboard_bp
 
 
 
