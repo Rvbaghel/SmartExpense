@@ -14,6 +14,8 @@ const Signup = () => {
     bio: "",
   });
 
+
+  
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
