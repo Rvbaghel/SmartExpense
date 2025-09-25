@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from backend.models.category_model import (
+from models.category_model import (
     create_category_table,
     insert_default_categories,
     insert_category,
