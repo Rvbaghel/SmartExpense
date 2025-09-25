@@ -24,7 +24,7 @@ const Navbar = () => {
       <nav className="navbar navbar-expand-lg sticky-top" role="navigation" aria-label="Main navigation">
         <div className="container">
           <Link className="navbar-brand" to="/">
-            💰 Personal Salary Manager
+            SmartExpense
           </Link>
 
           <button

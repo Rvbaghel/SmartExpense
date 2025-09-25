@@ -9,16 +9,17 @@ import About from './pages/About'
 import Footer from './components/Footer'
 import BackToTop from './components/BackToTop'
 import ThemeProvider from './context/ThemeContext'
-import { UserProvider } from './context/UserContext' // ✅ added
+import { UserProvider } from './context/UserContext'
 import Login from './pages/Login'
 import Signup from './pages/SignUp'
-import Profile from './pages/Profile';
+import Profile from './pages/Profile'
+import Review from './pages/review'
 import './App.css'
 
 function App() {
   return (
     <ThemeProvider>
-      <UserProvider> {/* ✅ Wrap the app with UserProvider */}
+      <UserProvider>
         <Router>
           <div className="App">
             <a href="#main-content" className="skip-link">Skip to main content</a>
@@ -31,8 +32,9 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/signup" element={<Signup />} />
-                  <Route path="/profile" element={<Profile />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/review" element={<Review />} />   {/* ✅ Added Review route */}
               </Routes>
             </main>
             <Footer />

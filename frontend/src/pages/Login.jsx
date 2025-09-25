@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext"; // Import context
+import { useUser } from "../context/UserContext"; 
+import CountdownLoader from "../components/CountdownLoader"; // ✅ import
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useUser(); // Get login function from context
+  const { login } = useUser();
 
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // ✅ loading state
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -16,6 +18,8 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true); // ✅ start countdown
 
     try {
       const res = await fetch("http://localhost:5000/auth/login", {
@@ -28,21 +32,24 @@ const Login = () => {
       console.log("Login response:", result);
 
       if (res.ok) {
-        // Update context instead of directly localStorage
         login(result.user);
-        alert("Login successful!");
-        navigate("/"); // redirect to homepage
+        navigate("/"); // redirect to dashboard/home
       } else {
         setError(result.error || "Login failed");
       }
     } catch (err) {
       console.error("Fetch error:", err);
       setError("Failed to connect to server");
+    } finally {
+      setLoading(false); // ✅ stop countdown
     }
   };
 
   return (
     <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+      {/* ✅ Countdown overlay */}
+      {loading && <CountdownLoader seconds={10} />}
+
       <div className="feature-card" style={{ width: "100%", maxWidth: "420px" }}>
         <h2 className="text-center mb-4">Login</h2>
 
