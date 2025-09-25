@@ -1,6 +1,6 @@
 import traceback
 from flask import Blueprint, request, jsonify
-from backend.models.users_model import create_users_table, insert_user, find_user_by_email_and_password
+from models.users_model import create_users_table, insert_user, find_user_by_email_and_password
 from config.db import get_connection
 from psycopg2.extras import RealDictCursor
 
