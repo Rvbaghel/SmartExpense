@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import CountdownLoader from "../components/CountdownLoader";
+import { API_URL } from "../config";
 
 const Dashboard = () => {
   const { isDarkMode } = useTheme();
@@ -30,7 +31,7 @@ const Dashboard = () => {
       setLoading(true);
       try {
         // Fetch charts from your Flask backend
-        const chartsRes = await fetch(`http://localhost:5000/dashboard/charts/${savedUser.id}`);
+        const chartsRes = await fetch(`${API_URL}/dashboard/charts/${savedUser.id}`);
         const chartsData = await chartsRes.json();
         
         if (chartsData.success) {
@@ -40,8 +41,8 @@ const Dashboard = () => {
         }
 
         // Fetch basic stats
-        const salaryRes = await fetch(`http://localhost:5000/salary/latest/${savedUser.id}`);
-        const expenseRes = await fetch("http://localhost:5000/expense/all");
+        const salaryRes = await fetch(`${API_URL}/salary/latest/${savedUser.id}`);
+        const expenseRes = await fetch(`${API_URL}/expense/all`);
         
         if (salaryRes.ok && expenseRes.ok) {
           const salaryData = await salaryRes.json();

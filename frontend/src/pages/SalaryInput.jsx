@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import CountdownLoader from "../components/CountdownLoader"; // ✅ import loader
+import { API_URL } from "../config";
 
 const SalaryInput = () => {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const SalaryInput = () => {
     try {
       setLoading(true); // ✅ start loader
       const fullDate = salaryDate + "-01"; // convert YYYY-MM -> YYYY-MM-DD
-      const res = await fetch("http://localhost:5000/salary/add", {
+      const res = await fetch(`${API_URL}/salary/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import CountdownLoader from "../components/CountdownLoader";
-
+import { API_URL } from "../config";
 const Review = () => {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const Review = () => {
       try {
         // Get latest salary
         const salaryRes = await fetch(
-          `http://localhost:5000/salary/latest/${savedUser.id}`
+          `${API_URL}/salary/latest/${savedUser.id}`
         );
         const salaryData = await salaryRes.json();
         if (!salaryRes.ok || !salaryData.success) {
@@ -37,7 +37,7 @@ const Review = () => {
         setSalary(salaryData.salary);
 
         // Fetch all expenses
-        const expenseRes = await fetch("http://localhost:5000/expense/all");
+        const expenseRes = await fetch(`${API_URL}/expense/all`);
         const expenseData = await expenseRes.json();
         if (!expenseRes.ok || !expenseData.success) {
           setError("Failed to load expenses");

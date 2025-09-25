@@ -3,6 +3,7 @@ import * as XLSX from "xlsx";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom"; 
 import CountdownLoader from "../components/CountdownLoader";
+import { API_URL } from "../config";
 
 const Expenses = () => {
   const { isDarkMode } = useTheme();
@@ -27,7 +28,7 @@ const Expenses = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("http://localhost:5000/category/all");
+        const res = await fetch(`${API_URL}/category/all`);
         const data = await res.json();
         if (!data.success || !Array.isArray(data.categories)) {
           setError("Failed to load categories");
@@ -156,7 +157,7 @@ const Expenses = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/expense/add_bulk", {
+      const res = await fetch(`${API_URL}/expense/add_bulk`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: user.id, expenses: expenseData }),

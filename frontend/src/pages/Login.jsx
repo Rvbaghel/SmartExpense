@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext"; 
 import CountdownLoader from "../components/CountdownLoader"; // ✅ import
+import { API_URL } from "../config";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const Login = () => {
     setLoading(true); // ✅ start countdown
 
     try {
-      const res = await fetch("http://localhost:5000/auth/login", {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

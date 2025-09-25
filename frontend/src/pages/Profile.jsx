@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
 import CountdownLoader from "../components/CountdownLoader";
+import { API_URL } from "../config";
 
 const Profile = () => {
   const { user } = useUser(); 
@@ -12,7 +13,7 @@ const Profile = () => {
       if (user) {
         setLoading(true);
         try {
-          const res = await fetch(`http://localhost:5000/auth/profile/${user.id}`);
+          const res = await fetch(`${API_URL}/auth/profile/${user.id}`);
           const data = await res.json();
           setUserData(data);
         } catch (err) {
