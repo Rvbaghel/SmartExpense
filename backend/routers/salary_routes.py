@@ -1,6 +1,6 @@
 import traceback
 from flask import Blueprint, request, jsonify
-from backend.models.salary_model import insert_salary, get_salaries_by_user, create_salary_table
+from models.salary_model import insert_salary, get_salaries_by_user, create_salary_table
 
 salary_bp = Blueprint("salary", __name__, url_prefix="/salary")
 create_salary_table()

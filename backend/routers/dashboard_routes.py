@@ -3,8 +3,8 @@ import io
 import base64
 from flask import Blueprint, jsonify
 import matplotlib.pyplot as plt
-from backend.models.salary_model import get_salaries_by_user
-from backend.models.expense_model import get_all_expenses
+from models.salary_model import get_salaries_by_user
+from models.expense_model import get_all_expenses
 
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
