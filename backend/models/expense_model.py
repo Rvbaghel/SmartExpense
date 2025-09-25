@@ -4,7 +4,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 # 🔹 Import category setup
-from models.category_model import create_category_table, insert_default_categories
+from backend.models.category_model import create_category_table, insert_default_categories
 
 
 def create_expense_table():

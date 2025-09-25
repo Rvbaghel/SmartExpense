@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models.expense_model import insert_expense, get_all_expenses
+from backend.models.expense_model import insert_expense, get_all_expenses
 
 expense_bp = Blueprint("expense", __name__, url_prefix="/expense")
 
