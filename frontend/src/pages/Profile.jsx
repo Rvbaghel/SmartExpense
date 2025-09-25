@@ -167,7 +167,6 @@ const Profile = () => {
             <div className="col-md-4">
               <div className="card border-0 bg-light text-center py-3">
                 <div className="card-body">
-                  <i className="bi bi-currency-dollar text-primary fs-2"></i>
                   <h6 className="mt-2 mb-0">Salary Entries</h6>
                   <small className="text-muted">Track your income</small>
                 </div>

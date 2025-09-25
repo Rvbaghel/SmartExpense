@@ -128,8 +128,7 @@ const Dashboard = () => {
               <div className="d-flex align-items-center">
                 <div className="flex-shrink-0">
                   <div className="bg-success bg-opacity-10 rounded p-2">
-                    <i className="bi bi-currency-dollar text-success fs-4"></i>
-                  </div>
+                   </div>
                 </div>
                 <div className="flex-grow-1 ms-3">
                   <div className="text-muted small">Total Salary</div>
