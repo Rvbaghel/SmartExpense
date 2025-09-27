@@ -7,7 +7,7 @@ import { API_URL } from "../config";
 const Dashboard = () => {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
-  
+
   const [user, setUser] = useState(null);
   const [charts, setCharts] = useState({});
   const [loading, setLoading] = useState(true);
@@ -26,6 +26,7 @@ const Dashboard = () => {
       return;
     }
     setUser(savedUser);
+    console.log(savedUser)
 
     const fetchDashboardData = async () => {
       setLoading(true);
@@ -33,7 +34,7 @@ const Dashboard = () => {
         // Fetch charts from your Flask backend
         const chartsRes = await fetch(`${API_URL}/dashboard/charts/${savedUser.id}`);
         const chartsData = await chartsRes.json();
-        
+
         if (chartsData.success) {
           setCharts(chartsData.charts);
         } else {
@@ -42,22 +43,30 @@ const Dashboard = () => {
 
         // Fetch basic stats
         const salaryRes = await fetch(`${API_URL}/salary/latest/${savedUser.id}`);
-        const expenseRes = await fetch(`${API_URL}/expense/all`);
-        
-        if (salaryRes.ok && expenseRes.ok) {
+
+        if (salaryRes.ok) {
           const salaryData = await salaryRes.json();
-          const expenseData = await expenseRes.json();
-          
           const salary = salaryData.success ? parseFloat(salaryData.salary.amount) : 0;
+
+          let month, year;
+          month = new Date(salaryData.salary.salary_date).getMonth() + 1
+          year = new Date(salaryData.salary.salary_date).getFullYear();
+
+          const expenseRes = await fetch(`${API_URL}/expense/by_month?user_id=${savedUser.id}&month=${month}&year=${year}`);
+          const expenseData = await expenseRes.json();
+
           const expenses = expenseData.success ? expenseData.expenses : [];
           const totalExpenses = expenses.reduce((sum, exp) => sum + parseFloat(exp.amount), 0);
-          
-          setStats({
-            totalSalary: salary,
-            totalExpenses: totalExpenses,
-            remainingAmount: salary - totalExpenses,
-            expenseCount: expenses.length
-          });
+
+          if (expenseRes.ok) {
+            setStats({
+              totalSalary: salary,
+              totalExpenses: totalExpenses,
+              remainingAmount: salary - totalExpenses,
+              expenseCount: expenses.length
+            });
+          }
+
         }
       } catch (err) {
         setError("Failed to load dashboard data");
@@ -107,7 +116,7 @@ const Dashboard = () => {
                 Welcome back, <strong>{user?.username}</strong>! Here's your financial overview.
               </p>
             </div>
-            
+
             {/* Progress Indicator */}
             <div className="text-end">
               <small className="text-muted d-block">Step 4 of 4</small>
@@ -128,7 +137,7 @@ const Dashboard = () => {
               <div className="d-flex align-items-center">
                 <div className="flex-shrink-0">
                   <div className="bg-success bg-opacity-10 rounded p-2">
-                   </div>
+                  </div>
                 </div>
                 <div className="flex-grow-1 ms-3">
                   <div className="text-muted small">Total Salary</div>
@@ -138,7 +147,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="col-xl-3 col-lg-6">
           <div className="card border-0 shadow-sm">
             <div className="card-body p-3">
@@ -156,7 +165,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="col-xl-3 col-lg-6">
           <div className="card border-0 shadow-sm">
             <div className="card-body p-3">
@@ -176,7 +185,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="col-xl-3 col-lg-6">
           <div className="card border-0 shadow-sm">
             <div className="card-body p-3">
@@ -209,9 +218,9 @@ const Dashboard = () => {
                 </h5>
               </div>
               <div className="card-body p-3">
-                <img 
-                  src={charts.salary_vs_expense} 
-                  alt="Salary vs Expenses Chart" 
+                <img
+                  src={charts.salary_vs_expense}
+                  alt="Salary vs Expenses Chart"
                   className="img-fluid w-100"
                   style={{ maxHeight: '300px', objectFit: 'contain' }}
                 />
@@ -231,9 +240,9 @@ const Dashboard = () => {
                 </h5>
               </div>
               <div className="card-body p-3">
-                <img 
-                  src={charts.expense_by_category_pie} 
-                  alt="Expenses by Category Pie Chart" 
+                <img
+                  src={charts.expense_by_category_pie}
+                  alt="Expenses by Category Pie Chart"
                   className="img-fluid w-100"
                   style={{ maxHeight: '300px', objectFit: 'contain' }}
                 />
@@ -253,9 +262,9 @@ const Dashboard = () => {
                 </h5>
               </div>
               <div className="card-body p-3">
-                <img 
-                  src={charts.salary_trend} 
-                  alt="Salary Trend Chart" 
+                <img
+                  src={charts.salary_trend}
+                  alt="Salary Trend Chart"
                   className="img-fluid w-100"
                   style={{ maxHeight: '300px', objectFit: 'contain' }}
                 />
@@ -275,9 +284,9 @@ const Dashboard = () => {
                 </h5>
               </div>
               <div className="card-body p-3">
-                <img 
-                  src={charts.expense_trend} 
-                  alt="Expense Trend Chart" 
+                <img
+                  src={charts.expense_trend}
+                  alt="Expense Trend Chart"
                   className="img-fluid w-100"
                   style={{ maxHeight: '300px', objectFit: 'contain' }}
                 />
@@ -297,9 +306,9 @@ const Dashboard = () => {
                 </h5>
               </div>
               <div className="card-body p-3">
-                <img 
-                  src={charts.expense_by_category_bar} 
-                  alt="Expenses by Category Bar Chart" 
+                <img
+                  src={charts.expense_by_category_bar}
+                  alt="Expenses by Category Bar Chart"
                   className="img-fluid w-100"
                   style={{ maxHeight: '400px', objectFit: 'contain' }}
                 />
@@ -323,28 +332,28 @@ const Dashboard = () => {
                   <small className="text-muted">Manage your financial data</small>
                 </div>
                 <div className="d-flex gap-2 flex-wrap">
-                  <button 
+                  <button
                     className="btn btn-outline-primary btn-sm"
                     onClick={() => navigate("/salary-input")}
                   >
                     <i className="bi bi-plus-circle me-1"></i>
                     Add Salary
                   </button>
-                  <button 
+                  <button
                     className="btn btn-outline-secondary btn-sm"
                     onClick={() => navigate("/expenses")}
                   >
                     <i className="bi bi-receipt me-1"></i>
                     Add Expenses
                   </button>
-                  <button 
+                  <button
                     className="btn btn-outline-success btn-sm"
                     onClick={() => navigate("/review")}
                   >
                     <i className="bi bi-clipboard-check me-1"></i>
                     Review Data
                   </button>
-                  <button 
+                  <button
                     className="btn btn-outline-info btn-sm"
                     onClick={() => window.location.reload()}
                   >
