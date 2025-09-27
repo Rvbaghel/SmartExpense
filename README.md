@@ -1,4 +1,4 @@
-# 💰 SmartExpense – Personal Finance Manager
+# SmartExpense – Personal Finance Manager
 
 [![Live Demo](https://img.shields.io/badge/demo-online-green?style=for-the-badge)](https://smart-expense-beta.vercel.app/)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](./LICENSE)
@@ -86,4 +86,4 @@ This project is licensed under the [MIT License](./LICENSE).
 
 ---
 
-Made with ❤️ by [Your Name]
+Made with ❤️ by [VISHAL BAGHEL]
