@@ -72,6 +72,7 @@ npm run dev
 
 (Add screenshots/gifs of your app UI here for more attraction 👇)
 <img width="1830" height="755" alt="sc1" src="https://github.com/user-attachments/assets/db082e24-27fc-4c8a-a6f1-85d2236b0ec3" />
+<img width="1499" height="830" alt="sc2" src="https://github.com/user-attachments/assets/e1129a41-05b8-4a8e-abe8-21d6154c127e" />
 
 ---
 
