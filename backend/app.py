@@ -10,7 +10,7 @@ import os
 app = Flask(__name__)
 
 # Enable CORS for your frontend (Vercel URL or localhost for dev)
-CORS(app, origins=["https://smart-expense-beta.vercel.app", "http://localhost:5173"], supports_credentials=True)
+CORS(app)
 
 # Register Blueprints
 app.register_blueprint(auth_bp, url_prefix="/auth")
@@ -26,4 +26,4 @@ def index():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Use Render's PORT
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=True)

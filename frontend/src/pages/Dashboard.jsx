@@ -8,6 +8,7 @@ const Dashboard = () => {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
 
+  const [month, setMonth] = useState(new Date().getMonth() + 1)
   const [user, setUser] = useState(null);
   const [charts, setCharts] = useState({});
   const [loading, setLoading] = useState(true);
@@ -18,6 +19,10 @@ const Dashboard = () => {
     remainingAmount: 0,
     expenseCount: 0
   });
+
+  const months = [
+    "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+  ]
 
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem("user"));
@@ -32,8 +37,10 @@ const Dashboard = () => {
       setLoading(true);
       try {
         // Fetch charts from your Flask backend
-        const chartsRes = await fetch(`${API_URL}/dashboard/charts/${savedUser.id}`);
+        const chartsRes = await fetch(`${API_URL}/dashboard/charts/${savedUser.id}?month=${month}`);
         const chartsData = await chartsRes.json();
+
+        console.log(chartsData)
 
         if (chartsData.success) {
           setCharts(chartsData.charts);
@@ -48,8 +55,7 @@ const Dashboard = () => {
           const salaryData = await salaryRes.json();
           const salary = salaryData.success ? parseFloat(salaryData.salary.amount) : 0;
 
-          let month, year;
-          month = new Date(salaryData.salary.salary_date).getMonth() + 1
+          let year;
           year = new Date(salaryData.salary.salary_date).getFullYear();
 
           const expenseRes = await fetch(`${API_URL}/expense/by_month?user_id=${savedUser.id}&month=${month}&year=${year}`);
@@ -65,6 +71,9 @@ const Dashboard = () => {
               remainingAmount: salary - totalExpenses,
               expenseCount: expenses.length
             });
+
+            console.log("Stats", stats)
+
           }
 
         }
@@ -76,25 +85,32 @@ const Dashboard = () => {
     };
 
     fetchDashboardData();
-  }, [navigate]);
+  }, [navigate, month]);
 
-  if (loading) return <CountdownLoader seconds={10} />;
+  if (loading) return <div className="flex items-center justify-center h-screen bg-white dark:bg-black">
+    <div className="flex space-x-2">
+      <span className="w-3 h-3 bg-sky-500 rounded-full animate-bounce [animation-delay:-0.75s]"></span>
+      <span className="w-3 h-3 bg-sky-500 rounded-full animate-bounce [animation-delay:-0.5s]"></span>
+      <span className="w-3 h-3 bg-sky-500 rounded-full animate-bounce [animation-delay:-0.25s]"></span>
+    </div>
+  </div>;
 
   if (error && !charts.salary_trend) {
     return (
-      <div className="container py-5">
-        <div className="row justify-content-center">
-          <div className="col-md-6">
-            <div className="alert alert-danger d-flex align-items-center" role="alert">
-              <i className="bi bi-exclamation-triangle-fill me-2"></i>
-              {error}
-            </div>
-            <div className="text-center">
-              <button className="btn btn-primary" onClick={() => navigate("/salary-input")}>
-                <i className="bi bi-plus-circle me-2"></i>
-                Add Salary & Expenses
-              </button>
-            </div>
+      <div className="flex justify-center items-center py-10">
+        <div className="max-w-md w-full space-y-6">
+          <div className="flex items-center gap-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 p-4 rounded-xl shadow-md">
+            <i className="bi bi-exclamation-triangle-fill text-xl"></i>
+            <span>{error}</span>
+          </div>
+          <div className="text-center">
+            <button
+              onClick={() => navigate("/salary-input")}
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md transition"
+            >
+              <i className="bi bi-plus-circle"></i>
+              Add Salary & Expenses
+            </button>
           </div>
         </div>
       </div>
@@ -102,272 +118,245 @@ const Dashboard = () => {
   }
 
   return (
-    <div className={`container-fluid py-4 ${isDarkMode ? "dark-theme" : "light-theme"}`}>
+    <div
+      className={`min-h-screen px-6 md:px-12 py-6 transition ${isDarkMode ? "bg-gray-900 text-gray-100" : "bg-gray-50 text-gray-800"
+        }`}
+    >
       {/* Header Section */}
-      <div className="row mb-4">
-        <div className="col-12">
-          <div className="d-flex justify-content-between align-items-center">
-            <div>
-              <h1 className="fw-bold mb-1">
-                <i className="bi bi-graph-up text-primary me-2"></i>
-                Financial Dashboard
-              </h1>
-              <p className="text-muted mb-0">
-                Welcome back, <strong>{user?.username}</strong>! Here's your financial overview.
-              </p>
-            </div>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <i className="bi bi-graph-up text-sky-500"></i>
+            Financial Dashboard
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">
+            Welcome back, <strong>{user?.username}</strong>! Here's your
+            financial overview.
+          </p>
+        </div>
 
-            {/* Progress Indicator */}
-            <div className="text-end">
-              <small className="text-muted d-block">Step 4 of 4</small>
-              <small className="text-success fw-semibold">100% Complete!</small>
-              <div className="progress mt-1" style={{ width: '120px', height: '3px' }}>
-                <div className="progress-bar bg-success" style={{ width: '100%' }}></div>
-              </div>
-            </div>
+        {/* Progress Indicator */}
+        <div className="mt-4 md:mt-0 text-right">
+          <small className="block text-gray-500 dark:text-gray-400">
+            Step 4 of 4
+          </small>
+          <small className="block text-green-500 font-semibold">
+            100% Complete!
+          </small>
+          <div className="w-32 h-1 bg-gray-200 dark:bg-gray-700 rounded mt-1">
+            <div className="w-full h-full bg-green-500 rounded"></div>
           </div>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="row mb-4 g-3">
-        <div className="col-xl-3 col-lg-6">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body p-3">
-              <div className="d-flex align-items-center">
-                <div className="flex-shrink-0">
-                  <div className="bg-success bg-opacity-10 rounded p-2">
-                  </div>
-                </div>
-                <div className="flex-grow-1 ms-3">
-                  <div className="text-muted small">Total Salary</div>
-                  <div className="h4 mb-0 text-success">₹{stats.totalSalary.toLocaleString()}</div>
-                </div>
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
+        {/* Salary */}
+        <div className="p-5 rounded-2xl shadow-md bg-white dark:bg-gray-800">
+          <div className="flex items-center gap-4">
+            <div className="bg-green-100 dark:bg-green-900 p-3 rounded-lg">
+              <i className="bi bi-cash text-green-600 dark:text-green-400 text-xl"></i>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Total Salary</p>
+              <h3 className="text-2xl font-bold text-green-600">
+                ₹{stats.totalSalary.toLocaleString()}
+              </h3>
             </div>
           </div>
         </div>
 
-        <div className="col-xl-3 col-lg-6">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body p-3">
-              <div className="d-flex align-items-center">
-                <div className="flex-shrink-0">
-                  <div className="bg-danger bg-opacity-10 rounded p-2">
-                    <i className="bi bi-receipt text-danger fs-4"></i>
-                  </div>
-                </div>
-                <div className="flex-grow-1 ms-3">
-                  <div className="text-muted small">Total Expenses</div>
-                  <div className="h4 mb-0 text-danger">₹{stats.totalExpenses.toLocaleString()}</div>
-                </div>
-              </div>
+        {/* Expenses */}
+        <div className="p-5 rounded-2xl shadow-md bg-white dark:bg-gray-800">
+          <div className="flex items-center gap-4">
+            <div className="bg-red-100 dark:bg-red-900 p-3 rounded-lg">
+              <i className="bi bi-receipt text-red-600 dark:text-red-400 text-xl"></i>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Total Expenses</p>
+              <h3 className="text-2xl font-bold text-red-600">
+                ₹{stats.totalExpenses.toLocaleString()}
+              </h3>
             </div>
           </div>
         </div>
 
-        <div className="col-xl-3 col-lg-6">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body p-3">
-              <div className="d-flex align-items-center">
-                <div className="flex-shrink-0">
-                  <div className={`${stats.remainingAmount >= 0 ? 'bg-primary' : 'bg-warning'} bg-opacity-10 rounded p-2`}>
-                    <i className={`bi bi-wallet ${stats.remainingAmount >= 0 ? 'text-primary' : 'text-warning'} fs-4`}></i>
-                  </div>
-                </div>
-                <div className="flex-grow-1 ms-3">
-                  <div className="text-muted small">Remaining Amount</div>
-                  <div className={`h4 mb-0 ${stats.remainingAmount >= 0 ? 'text-primary' : 'text-warning'}`}>
-                    ₹{stats.remainingAmount.toLocaleString()}
-                  </div>
-                </div>
-              </div>
+        {/* Remaining */}
+        <div className="p-5 rounded-2xl shadow-md bg-white dark:bg-gray-800">
+          <div className="flex items-center gap-4">
+            <div
+              className={`p-3 rounded-lg ${stats.remainingAmount >= 0
+                ? "bg-blue-100 dark:bg-blue-900"
+                : "bg-yellow-100 dark:bg-yellow-900"
+                }`}
+            >
+              <i
+                className={`bi bi-wallet text-xl ${stats.remainingAmount >= 0
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-yellow-600 dark:text-yellow-400"
+                  }`}
+              ></i>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Remaining Amount</p>
+              <h3
+                className={`text-2xl font-bold ${stats.remainingAmount >= 0
+                  ? "text-blue-600"
+                  : "text-yellow-600"
+                  }`}
+              >
+                ₹{stats.remainingAmount.toLocaleString()}
+              </h3>
             </div>
           </div>
         </div>
 
-        <div className="col-xl-3 col-lg-6">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body p-3">
-              <div className="d-flex align-items-center">
-                <div className="flex-shrink-0">
-                  <div className="bg-info bg-opacity-10 rounded p-2">
-                    <i className="bi bi-list-ul text-info fs-4"></i>
-                  </div>
-                </div>
-                <div className="flex-grow-1 ms-3">
-                  <div className="text-muted small">Total Entries</div>
-                  <div className="h4 mb-0 text-info">{stats.expenseCount}</div>
-                </div>
-              </div>
+        {/* Entries */}
+        <div className="p-5 rounded-2xl shadow-md bg-white dark:bg-gray-800">
+          <div className="flex items-center gap-4">
+            <div className="bg-cyan-100 dark:bg-cyan-900 p-3 rounded-lg">
+              <i className="bi bi-list-ul text-cyan-600 dark:text-cyan-400 text-xl"></i>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Total Entries</p>
+              <h3 className="text-2xl font-bold text-cyan-600">
+                {stats.expenseCount}
+              </h3>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Month Selector */}
+      <div className="flex flex-wrap justify-center gap-3 mb-6">
+        {months.map((curr_month, index) => (
+          <button
+            key={index}
+            onClick={() => setMonth(index + 1)}
+            className={`px-3 py-1.5 rounded-lg border transition ${month === index + 1
+              ? "bg-sky-500 text-white border-sky-500"
+              : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-sky-100 dark:hover:bg-gray-700"
+              }`}
+          >
+            {curr_month}
+          </button>
+        ))}
+      </div>
+
+      <h3 className="text-xl font-semibold text-sky-500 mb-6 text-center">
+        Month : {months[month - 1]}
+      </h3>
+
       {/* Charts Grid */}
-      <div className="row g-4">
-        {/* Salary vs Expense */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {charts.salary_vs_expense && (
-          <div className="col-lg-6">
-            <div className="card border-0 shadow-sm h-100">
-              <div className="card-header bg-light border-0">
-                <h5 className="mb-0">
-                  <i className="bi bi-bar-chart text-primary me-2"></i>
-                  Salary vs Expenses
-                </h5>
-              </div>
-              <div className="card-body p-3">
-                <img
-                  src={charts.salary_vs_expense}
-                  alt="Salary vs Expenses Chart"
-                  className="img-fluid w-100"
-                  style={{ maxHeight: '300px', objectFit: 'contain' }}
-                />
-              </div>
-            </div>
-          </div>
+          <ChartCard
+            title="Salary vs Expenses"
+            icon="bi-bar-chart"
+            color="text-sky-500"
+            src={charts.salary_vs_expense}
+          />
         )}
-
-        {/* Expense by Category Pie */}
         {charts.expense_by_category_pie && (
-          <div className="col-lg-6">
-            <div className="card border-0 shadow-sm h-100">
-              <div className="card-header bg-light border-0">
-                <h5 className="mb-0">
-                  <i className="bi bi-pie-chart text-success me-2"></i>
-                  Expenses by Category
-                </h5>
-              </div>
-              <div className="card-body p-3">
-                <img
-                  src={charts.expense_by_category_pie}
-                  alt="Expenses by Category Pie Chart"
-                  className="img-fluid w-100"
-                  style={{ maxHeight: '300px', objectFit: 'contain' }}
-                />
-              </div>
-            </div>
-          </div>
+          <ChartCard
+            title="Expenses by Category"
+            icon="bi-pie-chart"
+            color="text-green-500"
+            src={charts.expense_by_category_pie}
+          />
         )}
-
-        {/* Salary Trend */}
         {charts.salary_trend && (
-          <div className="col-lg-6">
-            <div className="card border-0 shadow-sm h-100">
-              <div className="card-header bg-light border-0">
-                <h5 className="mb-0">
-                  <i className="bi bi-graph-up text-success me-2"></i>
-                  Salary Trend
-                </h5>
-              </div>
-              <div className="card-body p-3">
-                <img
-                  src={charts.salary_trend}
-                  alt="Salary Trend Chart"
-                  className="img-fluid w-100"
-                  style={{ maxHeight: '300px', objectFit: 'contain' }}
-                />
-              </div>
-            </div>
-          </div>
+          <ChartCard
+            title="Salary Trend"
+            icon="bi-graph-up"
+            color="text-green-500"
+            src={charts.salary_trend}
+          />
         )}
-
-        {/* Expense Trend */}
         {charts.expense_trend && (
-          <div className="col-lg-6">
-            <div className="card border-0 shadow-sm h-100">
-              <div className="card-header bg-light border-0">
-                <h5 className="mb-0">
-                  <i className="bi bi-graph-down text-danger me-2"></i>
-                  Expense Trend
-                </h5>
-              </div>
-              <div className="card-body p-3">
-                <img
-                  src={charts.expense_trend}
-                  alt="Expense Trend Chart"
-                  className="img-fluid w-100"
-                  style={{ maxHeight: '300px', objectFit: 'contain' }}
-                />
-              </div>
-            </div>
-          </div>
+          <ChartCard
+            title="Expense Trend"
+            icon="bi-graph-down"
+            color="text-red-500"
+            src={charts.expense_trend}
+          />
         )}
-
-        {/* Category Bar Chart */}
         {charts.expense_by_category_bar && (
-          <div className="col-12">
-            <div className="card border-0 shadow-sm">
-              <div className="card-header bg-light border-0">
-                <h5 className="mb-0">
-                  <i className="bi bi-bar-chart-fill text-info me-2"></i>
-                  Detailed Category Breakdown
-                </h5>
-              </div>
-              <div className="card-body p-3">
-                <img
-                  src={charts.expense_by_category_bar}
-                  alt="Expenses by Category Bar Chart"
-                  className="img-fluid w-100"
-                  style={{ maxHeight: '400px', objectFit: 'contain' }}
-                />
-              </div>
-            </div>
-          </div>
+          <ChartCard
+            title="Detailed Category Breakdown"
+            icon="bi-bar-chart-fill"
+            color="text-cyan-500"
+            src={charts.expense_by_category_bar}
+            fullWidth
+          />
         )}
       </div>
 
       {/* Quick Actions */}
-      <div className="row mt-4">
-        <div className="col-12">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body p-3">
-              <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <div>
-                  <h6 className="mb-1">
-                    <i className="bi bi-lightning text-warning me-2"></i>
-                    Quick Actions
-                  </h6>
-                  <small className="text-muted">Manage your financial data</small>
-                </div>
-                <div className="d-flex gap-2 flex-wrap">
-                  <button
-                    className="btn btn-outline-primary btn-sm"
-                    onClick={() => navigate("/salary-input")}
-                  >
-                    <i className="bi bi-plus-circle me-1"></i>
-                    Add Salary
-                  </button>
-                  <button
-                    className="btn btn-outline-secondary btn-sm"
-                    onClick={() => navigate("/expenses")}
-                  >
-                    <i className="bi bi-receipt me-1"></i>
-                    Add Expenses
-                  </button>
-                  <button
-                    className="btn btn-outline-success btn-sm"
-                    onClick={() => navigate("/review")}
-                  >
-                    <i className="bi bi-clipboard-check me-1"></i>
-                    Review Data
-                  </button>
-                  <button
-                    className="btn btn-outline-info btn-sm"
-                    onClick={() => window.location.reload()}
-                  >
-                    <i className="bi bi-arrow-clockwise me-1"></i>
-                    Refresh
-                  </button>
-                </div>
-              </div>
-            </div>
+      <div className="mt-10 bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <h6 className="flex items-center gap-2 font-semibold text-gray-700 dark:text-gray-200">
+              <i className="bi bi-lightning text-yellow-500"></i>
+              Quick Actions
+            </h6>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Manage your financial data
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => navigate("/salary-input")}
+              className="px-4 py-2 rounded-lg border border-sky-500 text-sky-500 hover:bg-sky-50 dark:hover:bg-gray-700"
+            >
+              <i className="bi bi-plus-circle mr-1"></i>
+              Add Salary
+            </button>
+            <button
+              onClick={() => navigate("/expenses")}
+              className="px-4 py-2 rounded-lg border border-gray-500 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              <i className="bi bi-receipt mr-1"></i>
+              Add Expenses
+            </button>
+            <button
+              onClick={() => navigate("/review")}
+              className="px-4 py-2 rounded-lg border border-green-500 text-green-500 hover:bg-green-50 dark:hover:bg-gray-700"
+            >
+              <i className="bi bi-clipboard-check mr-1"></i>
+              Review Data
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 rounded-lg border border-cyan-500 text-cyan-500 hover:bg-cyan-50 dark:hover:bg-gray-700"
+            >
+              <i className="bi bi-arrow-clockwise mr-1"></i>
+              Refresh
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+const ChartCard = ({ title, icon, color, src, fullWidth }) => (
+  <div className={`${fullWidth ? "col-span-1 lg:col-span-2" : ""}`}>
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden">
+      <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-700 p-4">
+        <i className={`bi ${icon} ${color}`}></i>
+        <h5 className="font-semibold">{title}</h5>
+      </div>
+      <div className="p-4">
+        <img
+          src={src}
+          alt={title}
+          className="w-full h-72 object-contain rounded-lg"
+        />
+      </div>
+    </div>
+  </div>
+);
+
 
 export default Dashboard;

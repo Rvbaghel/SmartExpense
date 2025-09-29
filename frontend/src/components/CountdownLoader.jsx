@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./CountdownLoader.css"; // optional for styling
 
-const CountdownLoader = ({ seconds = 10, onFinish }) => {
+const CountdownLoader = ({ seconds = 1, onFinish }) => {
   const [count, setCount] = useState(seconds);
 
   useEffect(() => {

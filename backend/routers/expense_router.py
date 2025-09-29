@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+import pandas as pd
 from models.expense_model import insert_expense, get_all_expenses
 
 expense_bp = Blueprint("expense", __name__, url_prefix="/expense")
@@ -12,6 +13,39 @@ def all_expenses():
     try:
         expenses = get_all_expenses()
         return jsonify({"success": True, "expenses": expenses}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@expense_bp.route("/monthly", methods=["GET"])
+def monthly_expenses():
+    """
+    Fetch all expenses
+    """
+    try:
+        expenses = get_all_expenses()
+
+        df = pd.DataFrame({
+            'date': pd.to_datetime([exp['expense_date'] for exp in expenses]),
+            'amount': [float(exp['amount']) for exp in expenses]
+        })
+
+        # Extract month and year
+        df['month'] = df['date'].dt.month
+        df['year'] = df['date'].dt.year
+
+        # Group by year & month and sum amounts
+        monthly_sum = df.groupby(['year', 'month'])['amount'].sum().reset_index()
+
+        # Prepare response
+        result = []
+        for _, row in monthly_sum.iterrows():
+            result.append({
+                "year": int(row['year']),
+                "month": int(row['month']),
+                "total_amount": float(row['amount'])
+            })
+
+        return jsonify({"success": True, "expenses": result}), 200
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 

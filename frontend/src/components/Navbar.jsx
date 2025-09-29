@@ -1,139 +1,102 @@
-import React from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useTheme } from '../context/ThemeContext'
-import { useUser } from '../context/UserContext' // ✅ import user context
+import React, { useState } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import { useTheme } from "../context/ThemeContext"
+import { useUser } from "../context/UserContext"
 
 const Navbar = () => {
-  const { user, logout } = useUser() // ✅ get user & logout from context
+  const { user, logout } = useUser()
   const { isDarkMode, toggleTheme } = useTheme()
   const location = useLocation()
   const navigate = useNavigate()
-
-  const [isOpen, setIsOpen] = React.useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
   const isActive = (path) => location.pathname === path
-  const toggleNavbar = () => setIsOpen(!isOpen)
 
   const handleLogout = () => {
-    logout() // ✅ use context logout
-    navigate('/login')
+    logout()
+    navigate("/login")
+    setIsOpen(false)
   }
 
+  // Common navigation links
+  const commonLinks = [
+    { path: "/", label: "Home" },
+    { path: "/salary-input", label: "Salary" },
+    { path: "/expenses", label: "Expenses" },
+    { path: "/dashboard", label: "Dashboard" },
+    { path: "/about", label: "About" },
+  ]
+
+  // Auth-dependent links
+  const authLinks = !user
+    ? [
+      { path: "/signup", label: "SignUp" },
+      { path: "/login", label: "Login" },
+    ]
+    : [
+      { path: "/track-info", label: "Information" },
+      { path: "/profile", label: "Profile" },
+      { path: "/logout", label: "Logout", action: handleLogout },
+    ]
+
   return (
-    <header>
-      <nav className="navbar navbar-expand-lg sticky-top" role="navigation" aria-label="Main navigation">
-        <div className="container">
-          <Link className="navbar-brand" to="/">
-            SmartExpense
-          </Link>
+    <header className="shadow-md bg-white dark:bg-gray-900 ">
+      <nav className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between ">
+        {/* Brand */}
+        <Link to="/" className="text-xl font-bold no-underline">
+          <span className="text-sky-500 dark:text-teal-500">Smart</span>Expense
+        </Link>
 
+        {/* Mobile toggle button */}
+        <button
+          className="lg:hidden text-2xl"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle navigation"
+        >
+          {isOpen ? "✕" : "☰"}
+        </button>
+
+        {/* Links */}
+        <div
+          className={`flex-col lg:flex-row lg:flex items-center gap-4 absolute lg:static left-0 w-full lg:w-auto bg-white dark:bg-gray-900 lg:bg-transparent lg:dark:bg-transparent p-4 lg:p-0 transition-all ${isOpen ? "top-14 opacity-100" : "top-[-500px] opacity-0 lg:opacity-100"
+            }`}
+        >
+          {[...commonLinks, ...authLinks].map((link, idx) =>
+            link.label === "Logout" ? (
+              <button
+                key={idx}
+                onClick={link.action}
+                className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+              >
+                {link.label}
+              </button>
+            ) : (
+              <Link
+                key={idx}
+                to={link.path}
+                onClick={() => setIsOpen(false)}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition no-underline ${isActive(link.path)
+                  ? "bg-sky-500 text-white"
+                  : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
+              >
+                {link.label}
+              </Link>
+            )
+          )}
+
+          {/* Theme toggle */}
           <button
-            className="navbar-toggler"
-            type="button"
-            onClick={toggleNavbar}
-            aria-controls="navbarNav"
-            aria-expanded={isOpen}
-            aria-label="Toggle navigation"
+            onClick={
+              () => {
+                document.documentElement.classList.toggle('dark')
+              }
+            }
+            className="ml-2 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+            aria-label="Toggle theme"
           >
-            <span className="navbar-toggler-icon"></span>
+            {isDarkMode ? "🌞" : "🌙"}
           </button>
-
-          <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id="navbarNav">
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
-                <Link
-                  className={`nav-link ${isActive('/') ? 'active' : ''}`}
-                  to="/"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Home
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  className={`nav-link ${isActive('/salary-input') ? 'active' : ''}`}
-                  to="/salary-input"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Salary
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  className={`nav-link ${isActive('/expenses') ? 'active' : ''}`}
-                  to="/expenses"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Expenses
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  className={`nav-link ${isActive('/dashboard') ? 'active' : ''}`}
-                  to="/dashboard"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Dashboard
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  className={`nav-link ${isActive('/about') ? 'active' : ''}`}
-                  to="/about"
-                  onClick={() => setIsOpen(false)}
-                >
-                  About
-                </Link>
-              </li>
-
-              {/* Show SignUp & Login if no user, else Profile & Logout */}
-              {!user ? (
-                <>
-                  <li className="nav-item">
-                    <Link
-                      className={`nav-link ${isActive('/signup') ? 'active' : ''}`}
-                      to="/signup"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      SignUp
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link
-                      className={`nav-link ${isActive('/login') ? 'active' : ''}`}
-                      to="/login"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Login
-                    </Link>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li className="nav-item">
-                    <Link
-                      className={`nav-link ${isActive('/profile') ? 'active' : ''}`}
-                      to="/profile"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Profile
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <button className="btn btn-link nav-link" onClick={handleLogout}>
-                      Logout
-                    </button>
-                  </li>
-                </>
-              )}
-
-              <li className="nav-item">
-                <button className="theme-switch" onClick={toggleTheme} aria-label="Toggle theme">
-                  <i className={`bi ${isDarkMode ? 'bi-sun-fill' : 'bi-moon-fill'}`}></i>
-                </button>
-              </li>
-            </ul>
-          </div>
         </div>
       </nav>
     </header>
