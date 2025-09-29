@@ -1,6 +1,7 @@
 # routers/dashboard_routes.py
 import io
 import base64
+import pandas as pd
 from flask import Blueprint, jsonify
 import matplotlib.pyplot as plt
 from models.salary_model import get_salaries_by_user
@@ -32,7 +33,8 @@ def get_charts(user_id):
 
         # ----- 1. Salary Trend (Line Chart) -----
         plt.figure(figsize=(6,4))
-        salary_dates = [s["salary_date"] for s in salaries]
+        salaries['salary_date'] = pd.to_datetime(salaries['salary_date'])
+        salary_dates = [s["salary_date"] if s['salary_date'].dt.month == 10 else '' for s in salaries ]
         salary_amounts = [float(s["amount"]) for s in salaries]
         plt.plot(salary_dates, salary_amounts, marker='o', color='green', label="Salary")
         plt.title("Salary Trend Over Time")
