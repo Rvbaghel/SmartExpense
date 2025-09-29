@@ -23,6 +23,7 @@ import { UserProvider } from './context/UserContext';
 
 // Styles
 import './App.css';
+import Information from './pages/Information';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/track-info" element={<Information />} />
                 <Route path="/review" element={<Review />} />   {/* ✅ Added Review route */}
               </Routes>
             </main>

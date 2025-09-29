@@ -1,12 +1,16 @@
 # routers/dashboard_routes.py
 import io
+import numpy as np
 import base64
 import pandas as pd
-from flask import Blueprint, jsonify
+from datetime import datetime
+from flask import Blueprint, jsonify, request
 import matplotlib.pyplot as plt
+import matplotlib
 from models.salary_model import get_salaries_by_user
 from models.expense_model import get_all_expenses
 
+matplotlib.use("Agg")
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
 
@@ -23,9 +27,14 @@ def plot_to_base64():
 @dashboard_bp.route("/charts/<int:user_id>")
 def get_charts(user_id):
     try:
+
+        month = int( request.args.get("month"))
+        print("Month is", month)
+
         salaries = get_salaries_by_user(user_id)
         expenses = get_all_expenses()
 
+        print(salaries)
         # Filter only expenses of this user
         user_expenses = [e for e in expenses if e["cate_id"]]
 
@@ -33,15 +42,20 @@ def get_charts(user_id):
 
         # ----- 1. Salary Trend (Line Chart) -----
         plt.figure(figsize=(6,4))
-        salaries['salary_date'] = pd.to_datetime(salaries['salary_date'])
-        salary_dates = [s["salary_date"] if s['salary_date'].dt.month == 10 else '' for s in salaries ]
-        salary_amounts = [float(s["amount"]) for s in salaries]
-        plt.plot(salary_dates, salary_amounts, marker='o', color='green', label="Salary")
+        # salaries['salary_date'] = pd.to_datetime(salaries['salary_date'])
+        # filtered = salaries[salaries['salary_date'].dt.month == month]
+
+        salary_dates = [ str(sal['salary_date']) for sal in salaries]
+        salary_amounts = [ float(sal['amount']) for sal in salaries]
+
+
+        plt.plot(salary_dates, salary_amounts , marker='o', color='green', label="Salary")
         plt.title("Salary Trend Over Time")
         plt.xlabel("Date")
         plt.ylabel("Amount")
         plt.grid(True)
         plt.legend()
+
         charts["salary_trend"] = plot_to_base64()
 
         # ----- 2. Expense Trend (Line Chart) -----
@@ -91,7 +105,6 @@ def get_charts(user_id):
         salary_values = [salary_months.get(m, 0) for m in months]
         expense_values = [expense_months.get(m, 0) for m in months]
 
-        import numpy as np
         x = np.arange(len(months))
         width = 0.35
         plt.bar(x - width/2, salary_values, width, label="Salary", color="green")
