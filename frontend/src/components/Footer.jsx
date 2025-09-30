@@ -1,157 +1,161 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="footer utility-py-6" role="contentinfo">
-      <div className="container">
-        <div className="row g-4">
-          <div className="col-lg-4">
+    <footer
+      className="utility-py-6 bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300"
+      role="contentinfo"
+    >
+      <div className="container mx-auto px-4">
+        {/* Top content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Brand & Intro */}
+          <div>
             <div className="mb-3">
-              <span className="h5 fw-bold" style={{ color: 'var(--bs-primary, #007BFF)' }}>
-                 SmartExpense
+              <span className="text-xl font-bold text-sky-600 dark:text-teal-400">
+                SmartExpense
               </span>
             </div>
-            <p className="text-muted mb-3">
-              Simple personal finance management for everyone. Track your monthly salary and expenses 
-              with beautiful analytics to make better financial decisions.
+            <p className="text-sm mb-3">
+              Simple personal finance management for everyone. Track your
+              monthly salary and expenses with beautiful analytics to make better
+              financial decisions.
             </p>
-            <div className="footer-links">
-              <a href="mailto:baghelvishal264@gmail.com" className="me-3" aria-label="Email contact">
-                <i className="bi bi-envelope me-1"></i>Contact
+            <div className="flex flex-wrap gap-3 text-sm">
+              <a
+                href="mailto:baghelvishal264@gmail.com"
+                aria-label="Email contact"
+                className="no-underline"
+              >
+                <i className="bi bi-envelope mr-1"></i>Contact
               </a>
-              <Link to="/about" className="me-3" aria-label="About page">About</Link>
-              <a href="#features" className="me-3" aria-label="Features section">Features</a>
+              <Link to="/about" aria-label="About page" className="no-underline">
+                About
+              </Link>
+              <a href="#features" aria-label="Features section" className="no-underline">
+                Features
+              </a>
             </div>
           </div>
-          
-          <div className="col-lg-2 col-md-3">
-            <h6 className="fw-bold mb-3" style={{ color: 'var(--bs-body-color, #212529)' }}>
+
+          {/* Quick Start */}
+          <div>
+            <h6 className="font-bold mb-3 text-gray-900 dark:text-gray-100">
               Quick Start
             </h6>
-            <div className="footer-links d-flex flex-column">
-              <Link to="/salary-input" className="mb-2">Add Salary</Link>
-              <Link to="/expenses" className="mb-2">Upload Expenses</Link>
-              <Link to="/dashboard" className="mb-2">View Dashboard</Link>
-              <Link to="/profile" className="mb-2">My Profile</Link>
+            <div className="flex flex-col space-y-2 text-sm">
+              <Link to="/salary-input" className="no-underline">
+                Add Salary
+              </Link>
+              <Link to="/expenses" className="no-underline">
+                Upload Expenses
+              </Link>
+              <Link to="/dashboard" className="no-underline">
+                View Dashboard
+              </Link>
+              <Link to="/profile" className="no-underline">
+                My Profile
+              </Link>
             </div>
           </div>
-          
-          <div className="col-lg-2 col-md-3">
-            <h6 className="fw-bold mb-3" style={{ color: 'var(--bs-body-color, #212529)' }}>
+
+          {/* Resources */}
+          <div>
+            <h6 className="font-bold mb-3 text-gray-900 dark:text-gray-100">
               Resources
             </h6>
-            <div className="footer-links d-flex flex-column">
-              <Link to="/about" className="mb-2">About SmartExpense</Link>
-              <a href="#how-it-works" className="mb-2">How It Works</a>
-              <a href="https://github.com/Rvbaghel" target="_blank" rel="noopener noreferrer" className="mb-2">
+            <div className="flex flex-col space-y-2 text-sm">
+              <Link to="/about" className="no-underline">
+                About SmartExpense
+              </Link>
+              <a href="#how-it-works" className="no-underline">
+                How It Works
+              </a>
+              <a
+                href="https://github.com/Rvbaghel"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="no-underline"
+              >
                 Source Code
               </a>
-              <a href="mailto:baghelvishal264@gmail.com" className="mb-2">Support</a>
+              <a href="mailto:baghelvishal264@gmail.com" className="no-underline">
+                Support
+              </a>
             </div>
           </div>
-          
-          <div className="col-lg-4 col-md-6">
-            <h6 className="fw-bold mb-3" style={{ color: 'var(--bs-body-color, #212529)' }}>
+
+          {/* Contact */}
+          <div>
+            <h6 className="font-bold mb-3 text-gray-900 dark:text-gray-100">
               Get In Touch
             </h6>
-            <p className="text-muted mb-3">
+            <p className="text-sm mb-3">
               Have questions about SmartExpense? Reach out to the developer.
             </p>
-            <div className="d-flex flex-column gap-2 mb-3">
-              <a 
-                href="mailto:baghelvishal264@gmail.com" 
-                className="d-flex align-items-center text-decoration-none"
-                style={{ color: 'var(--bs-primary, #007BFF)' }}
+            <div className="flex flex-col gap-2 text-sm">
+              <a
+                href="mailto:baghelvishal264@gmail.com"
+                className="flex items-center text-sky-600 dark:text-teal-400 no-underline"
               >
-                <i className="bi bi-envelope me-2"></i>
+                <i className="bi bi-envelope mr-2"></i>
                 baghelvishal264@gmail.com
               </a>
-              <div className="d-flex align-items-center text-muted">
-                <i className="bi bi-geo-alt me-2"></i>
+              <div className="flex items-center text-gray-600 dark:text-gray-400">
+                <i className="bi bi-geo-alt mr-2"></i>
                 Gujarat University, India
               </div>
             </div>
           </div>
         </div>
-        
-        <hr className="my-4" style={{ borderColor: 'var(--bs-border-color, #dee2e6)' }} />
-        
-        <div className="row align-items-center">
-          <div className="col-md-6">
-            <p className="text-muted mb-0">
-              {new Date().getFullYear()} SmartExpense by{' '}
-              <strong style={{ color: 'var(--bs-primary, #007BFF)' }}>Vishal Baghel</strong>. 
-              Built with  for better financial management.
-            </p>
-          </div>
-          <div className="col-md-6 text-md-end">
-            <div className="footer-links d-flex justify-content-md-end gap-3">
-              <a 
-                href="https://github.com/Rvbaghel" 
-                target="_blank" 
+
+        {/* Divider */}
+        <hr className="my-6 border-gray-300 dark:border-gray-700" />
+
+        {/* Bottom content */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+          <p className="text-gray-600 dark:text-gray-400 text-center md:text-left">
+            {new Date().getFullYear()} SmartExpense by{" "}
+            <strong className="text-sky-600 dark:text-teal-400">
+              Vishal Baghel
+            </strong>
+            . Built for better financial management.
+          </p>
+          <div className="flex gap-3">
+            {[
+              {
+                href: "https://github.com/Rvbaghel",
+                icon: "bi-github",
+                bg: "bg-gray-900",
+              },
+              {
+                href: "https://in.linkedin.com/in/vishal-baghel-a055b5249",
+                icon: "bi-linkedin",
+                bg: "bg-[#0A66C2]",
+              },
+              {
+                href: "mailto:baghelvishal264@gmail.com",
+                icon: "bi-envelope",
+                bg: "bg-red-600",
+              },
+            ].map((item, idx) => (
+              <a
+                key={idx}
+                href={item.href}
+                target="_blank"
                 rel="noopener noreferrer"
-                className="d-flex align-items-center justify-content-center"
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
-                  backgroundColor: 'var(--bs-dark, #212529)',
-                  color: 'white',
-                  textDecoration: 'none',
-                  transition: 'transform 0.2s ease'
-                }}
-                aria-label="GitHub Profile"
-                onMouseOver={(e) => e.target.closest('a').style.transform = 'translateY(-2px)'}
-                onMouseOut={(e) => e.target.closest('a').style.transform = 'translateY(0)'}
+                className={`w-10 h-10 rounded-full flex items-center justify-center text-white ${item.bg} transform transition-transform duration-200 hover:-translate-y-1`}
+                aria-label={item.icon}
               >
-                <i className="bi bi-github"></i>
+                <i className={`bi ${item.icon}`}></i>
               </a>
-              <a 
-                href="https://in.linkedin.com/in/vishal-baghel-a055b5249" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="d-flex align-items-center justify-content-center"
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
-                  backgroundColor: '#0A66C2',
-                  color: 'white',
-                  textDecoration: 'none',
-                  transition: 'transform 0.2s ease'
-                }}
-                aria-label="LinkedIn Profile"
-                onMouseOver={(e) => e.target.closest('a').style.transform = 'translateY(-2px)'}
-                onMouseOut={(e) => e.target.closest('a').style.transform = 'translateY(0)'}
-              >
-                <i className="bi bi-linkedin"></i>
-              </a>
-              <a 
-                href="mailto:baghelvishal264@gmail.com"
-                className="d-flex align-items-center justify-content-center"
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
-                  backgroundColor: 'var(--bs-danger, #dc3545)',
-                  color: 'white',
-                  textDecoration: 'none',
-                  transition: 'transform 0.2s ease'
-                }}
-                aria-label="Email Contact"
-                onMouseOver={(e) => e.target.closest('a').style.transform = 'translateY(-2px)'}
-                onMouseOut={(e) => e.target.closest('a').style.transform = 'translateY(0)'}
-              >
-                <i className="bi bi-envelope"></i>
-              </a>
-            </div>
+            ))}
           </div>
         </div>
-        
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

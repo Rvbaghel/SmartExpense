@@ -21,10 +21,10 @@ const Navbar = () => {
   // Common navigation links
   const commonLinks = [
     { path: "/", label: "Home" },
+    { path: "/about", label: "About" },
     { path: "/salary-input", label: "Salary" },
     { path: "/expenses", label: "Expenses" },
     { path: "/dashboard", label: "Dashboard" },
-    { path: "/about", label: "About" },
   ]
 
   // Auth-dependent links
@@ -40,16 +40,20 @@ const Navbar = () => {
     ]
 
   return (
-    <header className="shadow-md bg-white dark:bg-gray-900 ">
-      <nav className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between ">
+    <header className="shadow-md bg-white dark:bg-gray-900 transition-colors duration-300">
+      <nav className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Brand */}
-        <Link to="/" className="text-xl font-bold no-underline">
-          <span className="text-sky-500 dark:text-teal-500">Smart</span>Expense
+        <Link
+          to="/"
+          className="text-xl font-bold no-underline flex items-center gap-1"
+        >
+          <span className="text-sky-500 dark:text-teal-400">Smart</span>
+          <span className="text-gray-900 dark:text-gray-100">Expense</span>
         </Link>
 
-        {/* Mobile toggle button */}
+        {/* Mobile toggle */}
         <button
-          className="lg:hidden text-2xl"
+          className="lg:hidden text-2xl focus:outline-none"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle navigation"
         >
@@ -58,15 +62,22 @@ const Navbar = () => {
 
         {/* Links */}
         <div
-          className={`flex-col lg:flex-row lg:flex items-center gap-4 absolute lg:static left-0 w-full lg:w-auto bg-white dark:bg-gray-900 lg:bg-transparent lg:dark:bg-transparent p-4 lg:p-0 transition-all ${isOpen ? "top-14 opacity-100" : "top-[-500px] opacity-0 lg:opacity-100"
-            }`}
+          className={`flex flex-col lg:flex-row lg:items-center gap-2
+    absolute lg:static left-0 w-full lg:w-auto
+    bg-white dark:bg-gray-900 lg:bg-transparent lg:dark:bg-transparent
+    shadow-md lg:shadow-none
+    p-4 lg:p-0
+    transition-all duration-300
+    z-50
+    ${isOpen ? "top-14 opacity-100" : "top-[-500px] opacity-0 lg:opacity-100"}
+  `}
         >
           {[...commonLinks, ...authLinks].map((link, idx) =>
             link.label === "Logout" ? (
               <button
                 key={idx}
                 onClick={link.action}
-                className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                className="px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 dark:font-medium transition hover:bg-red-200 dark:hover:bg-red-700"
               >
                 {link.label}
               </button>
@@ -76,8 +87,8 @@ const Navbar = () => {
                 to={link.path}
                 onClick={() => setIsOpen(false)}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition no-underline ${isActive(link.path)
-                  ? "bg-sky-500 text-white"
-                  : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                  ? "bg-sky-500 text-white dark:bg-teal-500"
+                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                   }`}
               >
                 {link.label}
@@ -87,17 +98,14 @@ const Navbar = () => {
 
           {/* Theme toggle */}
           <button
-            onClick={
-              () => {
-                document.documentElement.classList.toggle('dark')
-              }
-            }
-            className="ml-2 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+            onClick={toggleTheme}
+            className="ml-2 px-3 py-2 rounded-md text-sm font-medium transition hover:bg-gray-200 dark:hover:bg-gray-700"
             aria-label="Toggle theme"
           >
             {isDarkMode ? "🌞" : "🌙"}
           </button>
         </div>
+
       </nav>
     </header>
   )
