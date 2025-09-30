@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
-import CountdownLoader from "../components/CountdownLoader";
+import Loader from "../components/Loader";
 import { API_URL } from "../config";
 
 const Dashboard = () => {

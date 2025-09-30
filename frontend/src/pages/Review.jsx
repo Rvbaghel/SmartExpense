@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
-import CountdownLoader from "../components/CountdownLoader";
+import Loader from "../components/Loader";
 import { API_URL } from "../config";
 const Review = () => {
   const { isDarkMode } = useTheme();
@@ -68,7 +68,7 @@ const Review = () => {
     fetchData();
   }, [navigate]);
 
-  if (loading) return <CountdownLoader seconds={10} />;
+  if (loading) return <Loader />;
 
   if (error) {
     return (
@@ -130,24 +130,24 @@ const Review = () => {
                 <label className="text-muted small">User</label>
                 <div className="fw-semibold">{user?.username}</div>
               </div>
-              
+
               <div className="mb-3">
                 <label className="text-muted small">Monthly Salary</label>
                 <div className="h4 text-success mb-0">₹{salary?.amount.toLocaleString()}</div>
               </div>
-              
+
               <div className="mb-3">
                 <label className="text-muted small">Salary Month</label>
                 <div className="fw-semibold">
-                  {new Date(salary?.salary_date).toLocaleDateString('en-US', { 
-                    month: 'long', 
-                    year: 'numeric' 
+                  {new Date(salary?.salary_date).toLocaleDateString('en-US', {
+                    month: 'long',
+                    year: 'numeric'
                   })}
                 </div>
               </div>
-              
-              <button 
-                className="btn btn-outline-warning btn-sm w-100" 
+
+              <button
+                className="btn btn-outline-warning btn-sm w-100"
                 onClick={handleEditSalary}
               >
                 <i className="bi bi-pencil me-2"></i>
@@ -174,14 +174,14 @@ const Review = () => {
                     <span className="fw-semibold text-danger">₹{totalExpenses.toLocaleString()}</span>
                   </div>
                 </div>
-                
+
                 <div className="col-12">
                   <div className="d-flex justify-content-between">
                     <span className="text-muted">Monthly Salary:</span>
                     <span className="fw-semibold text-success">₹{salary?.amount.toLocaleString()}</span>
                   </div>
                 </div>
-                
+
                 <div className="col-12">
                   <hr className="my-2" />
                   <div className="d-flex justify-content-between">
@@ -191,7 +191,7 @@ const Review = () => {
                     </span>
                   </div>
                 </div>
-                
+
                 <div className="col-12">
                   <div className="small text-muted text-center">
                     <i className="bi bi-info-circle me-1"></i>
@@ -218,18 +218,18 @@ const Review = () => {
                   Review your data and make changes if needed before proceeding to the dashboard.
                 </p>
               </div>
-              
+
               <div className="mt-auto">
-                <button 
-                  className="btn btn-outline-warning w-100 mb-2" 
+                <button
+                  className="btn btn-outline-warning w-100 mb-2"
                   onClick={handleEditExpenses}
                 >
                   <i className="bi bi-pencil me-2"></i>
                   Edit Expenses
                 </button>
-                
-                <button 
-                  className="btn btn-success w-100" 
+
+                <button
+                  className="btn btn-success w-100"
                   onClick={handleConfirm}
                 >
                   <i className="bi bi-check-circle me-2"></i>
@@ -304,15 +304,15 @@ const Review = () => {
       <div className="row mt-4">
         <div className="col-12">
           <div className="d-flex justify-content-between align-items-center">
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="btn btn-outline-secondary"
               onClick={() => navigate('/expenses')}
             >
               <i className="bi bi-arrow-left me-2"></i>
               Back to Expenses
             </button>
-            
+
             <div className="text-muted small">
               Next: View Dashboard
             </div>

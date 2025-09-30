@@ -1,71 +1,94 @@
-import React from 'react'
-import StepCard from './StepCard'
+import React from "react"
+import StepCard from "./StepCard"
 
 const HowItWorksSection = () => {
   const steps = [
     {
       number: 1,
-      title: 'Add Monthly Salary',
-      description: 'Enter your monthly salary amount. Simple one-time setup for each month to track your income.'
+      title: "Add Monthly Salary",
+      description:
+        "Enter your monthly salary amount. Simple one-time setup for each month to track your income.",
     },
     {
       number: 2,
-      title: 'Upload Your Expenses',
-      description: 'Upload expenses via CSV/Excel file or add them manually. Link expenses to specific months and categories.'
+      title: "Upload Your Expenses",
+      description:
+        "Upload expenses via CSV/Excel file or add them manually. Link expenses to specific months and categories.",
     },
     {
       number: 3,
-      title: 'Review & Validate',
-      description: 'Check your uploaded data, edit if needed, and ensure all expenses are properly categorized before finalizing.'
+      title: "Review & Validate",
+      description:
+        "Check your uploaded data, edit if needed, and ensure all expenses are properly categorized before finalizing.",
     },
     {
       number: 4,
-      title: 'View Analytics Dashboard',
-      description: 'See beautiful charts showing salary vs expenses, spending by category, and monthly trends to make informed decisions.'
-    }
+      title: "View Analytics Dashboard",
+      description:
+        "See beautiful charts showing salary vs expenses, spending by category, and monthly trends to make informed decisions.",
+    },
   ]
 
   return (
-    <section className="steps-section utility-py-6" id="how-it-works">
-      <div className="container">
-        <div className="row">
-          <div className="col-lg-8 mx-auto text-center mb-5">
-            <h2 className="display-5 fw-bold mb-3">How SmartExpense Works</h2>
-            <p className="lead text-muted">
-              Four simple steps to take control of your finances. Get insights in minutes, not hours.
-            </p>
-          </div>
+    <section
+      id="how-it-works"
+      className="py-16 border-t border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 transition-colors duration-300"
+    >
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Section header */}
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-sky-500 to-teal-500 bg-clip-text text-transparent">
+            How SmartExpense Works
+          </h2>
+          <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">
+            Four simple steps to take control of your finances. Get insights in
+            minutes, not hours.
+          </p>
         </div>
-        <div className="row g-4">
+
+        {/* Steps grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
           {steps.map((step, index) => (
-            <div key={index} className="col-md-6 col-lg-3 text-center">
-              <StepCard {...step} />
-            </div>
+            <StepCard key={index} {...step} />
           ))}
         </div>
-        
-        {/* Simple workflow illustration */}
-        <div className="row mt-5 pt-4">
-          <div className="col-12 text-center">
-            <div className="d-flex justify-content-center align-items-center flex-wrap gap-3">
-              <div className="d-flex align-items-center">
-                <span className="badge bg-primary rounded-pill px-3 py-2">Salary</span>
-                <i className="bi bi-arrow-right mx-3 text-muted"></i>
+
+        <div className="border-t  border-gray-200 dark:border-gray-700 mt-16"></div>
+
+        <div className="flex flex-row justify-center place-items-center gap-4 mt-4">
+
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-4">
+            Complete workflow in under 5 minutes
+          </p>
+
+          {/* Workflow Illustration */}
+          <div className=" border-gray-200 dark:border-gray-700">
+            <div className="flex flex-wrap justify-center items-center gap-4">
+              <div className="flex items-center">
+                <span className="px-4 py-2 rounded-full bg-sky-500 text-white text-sm font-medium">
+                  Salary
+                </span>
+                <i className="bi bi-arrow-right mx-3 text-gray-400 dark:text-gray-500"></i>
               </div>
-              <div className="d-flex align-items-center">
-                <span className="badge bg-secondary rounded-pill px-3 py-2">Expenses</span>
-                <i className="bi bi-arrow-right mx-3 text-muted"></i>
+              <div className="flex items-center">
+                <span className="px-4 py-2 rounded-full bg-purple-500 text-white text-sm font-medium">
+                  Expenses
+                </span>
+                <i className="bi bi-arrow-right mx-3 text-gray-400 dark:text-gray-500"></i>
               </div>
-              <div className="d-flex align-items-center">
-                <span className="badge bg-success rounded-pill px-3 py-2">Review</span>
-                <i className="bi bi-arrow-right mx-3 text-muted"></i>
+              <div className="flex items-center">
+                <span className="px-4 py-2 rounded-full bg-green-500 text-white text-sm font-medium">
+                  Review
+                </span>
+                <i className="bi bi-arrow-right mx-3 text-gray-400 dark:text-gray-500"></i>
               </div>
-              <span className="badge bg-warning rounded-pill px-3 py-2">Dashboard</span>
+              <span className="px-4 py-2 rounded-full bg-yellow-500 text-white text-sm font-medium">
+                Dashboard
+              </span>
             </div>
-            <p className="text-muted mt-3 mb-0">
-              <small>Complete workflow in under 5 minutes</small>
-            </p>
+
           </div>
+
         </div>
       </div>
     </section>

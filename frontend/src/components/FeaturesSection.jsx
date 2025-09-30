@@ -1,170 +1,127 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import FeatureCard from './FeatureCard'
+import React from "react";
+import { Link } from "react-router-dom";
+import FeatureCard from "./FeatureCard";
 
 const FeaturesSection = () => {
   const features = [
     {
-      icon: 'bi-currency-dollar',
-      iconClass: 'icon-salary',
-      title: 'Monthly Salary Tracking',
-      description: 'Add and manage your monthly salary easily. Track your income month by month to understand your earnings pattern.',
-      link: '/salary-input',
-      linkText: 'Add Salary'
+      icon: "bi-currency-dollar",
+      iconClass: "icon-salary",
+      title: "Monthly Salary Tracking",
+      description:
+        "Add and manage your monthly salary easily. Track your income month by month to understand your earnings pattern.",
+      link: "/salary-input",
+      linkText: "Add Salary",
     },
     {
-      icon: 'bi-receipt-cutoff',
-      iconClass: 'icon-expense',
-      title: 'Smart Expense Management',
-      description: 'Upload expenses via CSV/Excel or add manually. Categorize your spending and link expenses to specific months.',
-      link: '/expenses',
-      linkText: 'Add Expenses'
+      icon: "bi-receipt-cutoff",
+      iconClass: "icon-expense",
+      title: "Smart Expense Management",
+      description:
+        "Upload expenses via CSV/Excel or add manually. Categorize your spending and link expenses to specific months.",
+      link: "/expenses",
+      linkText: "Add Expenses",
     },
     {
-      icon: 'bi-bar-chart-line',
-      iconClass: 'icon-dashboard',
-      title: 'Visual Analytics Dashboard',
-      description: 'View beautiful charts showing salary vs expenses, category breakdowns, and spending trends over time.',
-      link: '/dashboard',
-      linkText: 'View Analytics'
+      icon: "bi-bar-chart-line",
+      iconClass: "icon-dashboard",
+      title: "Visual Analytics Dashboard",
+      description:
+        "View beautiful charts showing salary vs expenses, category breakdowns, and spending trends over time.",
+      link: "/dashboard",
+      linkText: "View Analytics",
     },
     {
-      icon: 'bi-lightbulb',
-      iconClass: 'icon-ai',
-      title: 'Smart Insights',
-      description: 'Get personalized recommendations based on your spending patterns to improve your financial health.',
-      link: '/dashboard',
-      linkText: 'Get Insights'
-    }
-  ]
+      icon: "bi-lightbulb",
+      iconClass: "icon-ai",
+      title: "Smart Insights",
+      description:
+        "Get personalized recommendations based on your spending patterns to improve your financial health.",
+      link: "/dashboard",
+      linkText: "Get Insights",
+    },
+  ];
+
+  const steps = [
+    {
+      number: "1",
+      title: "Add Salary",
+      desc: "Enter monthly income",
+      bg: "from-blue-500 to-blue-700",
+    },
+    {
+      number: "2",
+      title: "Upload Expenses",
+      desc: "CSV/Excel or manual entry",
+      bg: "from-teal-400 to-emerald-600",
+    },
+    {
+      number: "3",
+      title: "Review & Edit",
+      desc: "Validate your data",
+      bg: "from-amber-400 to-orange-500",
+    },
+    {
+      number: "4",
+      title: "View Dashboard",
+      desc: "Analyze with charts",
+      bg: "from-purple-500 to-violet-700",
+    },
+  ];
 
   return (
-    <section className="utility-py-6" id="features" style={{
-      background: 'var(--bs-card-bg, #f8f9fa)',
-      borderTop: '1px solid var(--bs-border-color, #dee2e6)',
-      borderBottom: '1px solid var(--bs-border-color, #dee2e6)',
-      transition: 'background-color 0.3s ease, border-color 0.3s ease'
-    }}>
-      <div className="container">
-        <div className="row">
-          <div className="col-lg-8 mx-auto text-center mb-5">
-            <h2 className="display-5 fw-bold mb-3" style={{
-              background: 'linear-gradient(135deg, var(--bs-primary, #007BFF) 0%, var(--bs-secondary, #6c757d) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
-              Simple Finance Management Made Easy
-            </h2>
-            <p className="lead" style={{ color: 'var(--text-muted, #6c757d)' }}>
-              Track your salary and expenses effortlessly. Upload CSV files, visualize your spending, 
-              and make informed financial decisions with SmartExpense.
-            </p>
-          </div>
+    <section
+      id="features"
+      className="py-16 lg:py-24 bg-gray-50 dark:bg-gray-900 border-y border-gray-200 dark:border-gray-700 transition-colors duration-300"
+    >
+      <div className="container mx-auto px-4">
+        {/* Header */}
+        <div className="max-w-3xl mx-auto text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-gray-500 bg-clip-text text-transparent">
+            Simple Finance Management Made Easy
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Track your salary and expenses effortlessly. Upload CSV files,
+            visualize your spending, and make informed financial decisions with
+            SmartExpense.
+          </p>
         </div>
-        <div className="row g-4">
+
+        {/* Feature Cards */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((feature, index) => (
-            <div key={index} className="col-md-6 col-lg-3">
-              <FeatureCard {...feature} />
-            </div>
+            <FeatureCard key={index} {...feature} />
           ))}
         </div>
-        
+
         {/* Quick Steps Section */}
-        <div className="row mt-5 pt-4" style={{ borderTop: '1px solid var(--bs-border-color, #dee2e6)' }}>
-          <div className="col-12 text-center mb-4">
-            <h4 className="fw-semibold" style={{ color: 'var(--bs-body-color, #212529)' }}>
+        <div className="mt-16 pt-10 border-t border-gray-200 dark:border-gray-700">
+          <div className="text-center mb-8">
+            <h4 className="text-xl font-semibold text-gray-900 dark:text-white">
               How SmartExpense Works
             </h4>
           </div>
-          <div className="col-md-3 col-6 text-center mb-3">
-            <div style={{
-              width: '60px',
-              height: '60px',
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, var(--bs-primary, #007BFF), #1e7ddb)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1rem',
-              color: 'white',
-              fontSize: '1.5rem',
-              fontWeight: 'bold'
-            }}>
-              1
-            </div>
-            <h6 className="fw-semibold">Add Salary</h6>
-            <small style={{ color: 'var(--text-muted, #6c757d)' }}>
-              Enter monthly income
-            </small>
-          </div>
-          <div className="col-md-3 col-6 text-center mb-3">
-            <div style={{
-              width: '60px',
-              height: '60px',
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, #21d4a7, #1bb592)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1rem',
-              color: 'white',
-              fontSize: '1.5rem',
-              fontWeight: 'bold'
-            }}>
-              2
-            </div>
-            <h6 className="fw-semibold">Upload Expenses</h6>
-            <small style={{ color: 'var(--text-muted, #6c757d)' }}>
-              CSV/Excel or manual entry
-            </small>
-          </div>
-          <div className="col-md-3 col-6 text-center mb-3">
-            <div style={{
-              width: '60px',
-              height: '60px',
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, #f39c12, #e67e22)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1rem',
-              color: 'white',
-              fontSize: '1.5rem',
-              fontWeight: 'bold'
-            }}>
-              3
-            </div>
-            <h6 className="fw-semibold">Review & Edit</h6>
-            <small style={{ color: 'var(--text-muted, #6c757d)' }}>
-              Validate your data
-            </small>
-          </div>
-          <div className="col-md-3 col-6 text-center mb-3">
-            <div style={{
-              width: '60px',
-              height: '60px',
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, #9b59b6, #8e44ad)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1rem',
-              color: 'white',
-              fontSize: '1.5rem',
-              fontWeight: 'bold'
-            }}>
-              4
-            </div>
-            <h6 className="fw-semibold">View Dashboard</h6>
-            <small style={{ color: 'var(--text-muted, #6c757d)' }}>
-              Analyze with charts
-            </small>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            {steps.map((step, i) => (
+              <div key={i} className="flex flex-col items-center">
+                <div
+                  className={`w-16 h-16 rounded-full bg-gradient-to-br ${step.bg} flex items-center justify-center text-white text-xl font-bold mb-3`}
+                >
+                  {step.number}
+                </div>
+                <h6 className="font-semibold text-gray-900 dark:text-white">
+                  {step.title}
+                </h6>
+                <small className="text-gray-600 dark:text-gray-400">
+                  {step.desc}
+                </small>
+              </div>
+            ))}
           </div>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default FeaturesSection
+export default FeaturesSection;

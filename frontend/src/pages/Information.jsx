@@ -107,7 +107,7 @@ const Information = () => {
                                 ₹{sal.amount}
                                 /
                                 <span className="font-semibold text-red-600 dark:text-red-400">
-                                    ₹{cumulativeExpenses[idx]}
+                                    ₹{cumulativeExpenses[new Date(sal.salary_date).getMonth()]}
                                 </span>
                             </span>
                         </li>

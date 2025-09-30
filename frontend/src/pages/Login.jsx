@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext"; 
-import CountdownLoader from "../components/CountdownLoader"; // ✅ import
+import { useUser } from "../context/UserContext";
+import Loader from "../components/Loader";
 import { API_URL } from "../config";
 
 const Login = () => {
@@ -49,7 +49,7 @@ const Login = () => {
   return (
     <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
       {/* ✅ Countdown overlay */}
-      {loading && <CountdownLoader seconds={10} />}
+      {loading && <Loader />}
 
       <div className="feature-card" style={{ width: "100%", maxWidth: "420px" }}>
         <h2 className="text-center mb-4">Login</h2>
