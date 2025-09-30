@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import { useTheme } from "../context/ThemeContext";
-import { useNavigate } from "react-router-dom"; 
-import CountdownLoader from "../components/CountdownLoader";
+import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 import { API_URL } from "../config";
 
 const Expenses = () => {
@@ -188,7 +188,7 @@ const Expenses = () => {
     { category: "Entertainment", amount: 800, date: "2025-01-20" },
   ];
 
-  if (loading) return <CountdownLoader seconds={10} />;
+  if (loading) return <Loader />;
 
   return (
     <div className={`container py-5 ${isDarkMode ? "dark-theme" : "light-theme"}`}>
@@ -251,7 +251,7 @@ const Expenses = () => {
                   <p className="text-muted mb-0">CSV or Excel format accepted</p>
                 </div>
               </div>
-              
+
               <input
                 type="file"
                 id="fileUpload"
@@ -276,15 +276,15 @@ const Expenses = () => {
 
           {/* Submit Button */}
           <div className="d-flex justify-content-between align-items-center mb-4">
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="btn btn-outline-secondary"
               onClick={() => navigate('/salary-input')}
             >
               <i className="bi bi-arrow-left me-2"></i>
               Back to Salary
             </button>
-            
+
             <button
               className="btn btn-primary"
               onClick={handleSubmit}
@@ -350,7 +350,7 @@ const Expenses = () => {
                 ))}
               </div>
             </div>
-            
+
             {/* Quick Tips */}
             <div className="card-footer bg-light border-0">
               <h6 className="mb-2">

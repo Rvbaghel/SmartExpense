@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
-import CountdownLoader from "../components/CountdownLoader"; // ✅ import loader
+import Loader from "../components/Loader";
 import { API_URL } from "../config";
 
 const SalaryInput = () => {
@@ -9,125 +9,191 @@ const SalaryInput = () => {
   const { isDarkMode } = useTheme();
 
   const [user, setUser] = useState(null);
-  const [amount, setAmount] = useState("");
-  const [salaryDate, setSalaryDate] = useState("");
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [monthlySalaries, setMonthlySalaries] = useState(Array(12).fill(""));
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [loading, setLoading] = useState(false); // ✅ loader state
+  const [loading, setLoading] = useState(false);
 
-  // Check if user is logged in
+  const yearTimeout = useRef(null);
+  const abortController = useRef(null);
+
+  const months = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  ];
+
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem("user"));
-    if (!savedUser) {
-      navigate("/login");
-    } else {
+    if (!savedUser) navigate("/login");
+    else {
       setUser(savedUser);
+      fetchSalariesDebounced(savedUser.id, year);
     }
-  }, [navigate]);
+    // Cleanup on unmount
+    return () => abortController.current?.abort();
+  }, [year, navigate]);
+
+  // Debounced fetch with cancel
+  const fetchSalariesDebounced = (userId, selectedYear) => {
+    if (yearTimeout.current) clearTimeout(yearTimeout.current);
+    if (abortController.current) abortController.current.abort();
+
+    yearTimeout.current = setTimeout(() => {
+      fetchSalaries(userId, selectedYear);
+    }, 500); // 500ms debounce
+  };
+
+  const fetchSalaries = async (userId, selectedYear) => {
+    try {
+      setLoading(true);
+      abortController.current = new AbortController();
+      const res = await fetch(`${API_URL}/salary/user/${userId}`, {
+        signal: abortController.current.signal,
+      });
+      const data = await res.json();
+      const salariesByMonth = Array(12).fill("");
+
+      data.forEach(item => {
+        const date = new Date(item.salary_date);
+        if (date.getFullYear() === Number(selectedYear)) {
+          salariesByMonth[date.getMonth()] = item.amount;
+        }
+      });
+
+      setMonthlySalaries(applyRangeFillOptimized(salariesByMonth));
+    } catch (err) {
+      if (err.name !== "AbortError") {
+        console.error(err);
+        setError("Failed to fetch salary data");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Optimized range fill: fills only in-between empty months
+  const applyRangeFillOptimized = (arr) => {
+    const filled = [...arr];
+    let lastValue = null;
+
+    for (let i = 0; i < 12; i++) {
+      if (filled[i] !== "") lastValue = filled[i];
+      else if (lastValue !== null) filled[i] = lastValue;
+    }
+
+    // Optional: backward fill from last known
+    let firstValue = null;
+    for (let i = 11; i >= 0; i--) {
+      if (filled[i] !== "") firstValue = filled[i];
+      else if (firstValue !== null) filled[i] = firstValue;
+    }
+
+    return filled;
+  };
+
+  const handleMonthlyChange = (idx, value) => {
+    const updated = [...monthlySalaries];
+    updated[idx] = value || "";
+    setMonthlySalaries(applyRangeFillOptimized(updated));
+  };
+
+  const handleYearChange = (e) => {
+    setYear(e.target.value);
+    fetchSalariesDebounced(user?.id, e.target.value);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    if (!amount || !salaryDate) {
-      setError("Please fill in all fields.");
-      return;
-    }
-
-    if (Number(amount) <= 0) {
-      setError("Amount must be greater than zero.");
+    if (!monthlySalaries.some(val => val)) {
+      setError("Enter at least one month salary!");
       return;
     }
 
     try {
-      setLoading(true); // ✅ start loader
-      const fullDate = salaryDate + "-01"; // convert YYYY-MM -> YYYY-MM-DD
-      const res = await fetch(`${API_URL}/salary/add`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: user.id,
-          amount: amount,
-          salary_date: fullDate,
-        }),
+      setLoading(true);
+      const promises = monthlySalaries.map((amt, idx) => {
+        if (!amt) return null;
+        const month = (idx + 1).toString().padStart(2, "0");
+        return fetch(`${API_URL}/salary/add`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: user.id,
+            amount: amt,
+            salary_date: `${year}-${month}-01`,
+          }),
+        });
       });
 
-      const result = await res.json();
-
-      if (res.ok) {
-        localStorage.setItem(
-          "currentSalary",
-          JSON.stringify({
-            salary_id: result.salary.id,
-            amount: result.salary.amount,
-            salary_date: result.salary.salary_date,
-          })
-        );
-        setSuccess("Salary added successfully!");
-        navigate("/expenses");
-      } else {
-        setError(result.error || "Failed to add salary");
-      }
+      const results = await Promise.all(promises.filter(Boolean));
+      await Promise.all(results.map(r => r.json()));
+      setSuccess("Salary saved successfully!");
     } catch (err) {
       console.error(err);
-      setError("Server error. Please try again later.");
+      setError("Server error.");
     } finally {
-      setLoading(false); // ✅ stop loader
+      setLoading(false);
     }
   };
 
-  if (!user) return null; // prevent rendering before user check
-
-  // ✅ show countdown while loading
-  if (loading) return <CountdownLoader seconds={10} />;
+  if (!user) return null;
+  if (loading) return <Loader />;
 
   return (
-    <div className={`container py-5 ${isDarkMode ? "dark-theme" : "light-theme"}`}>
-      <div className="row justify-content-center">
-        <div className="col-lg-6">
-          <div className="feature-card p-4">
-            <h2 className="mb-3">Welcome, {user.username}</h2>
-            <p className="mb-4">Enter your salary for the month:</p>
+    <div className={`${isDarkMode ? "bg-gray-900 text-gray-200" : "bg-gray-50 text-gray-900"} min-h-screen transition-colors duration-300`}>
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-2">Welcome, {user.username}</h1>
+          <p className="text-gray-600 dark:text-gray-400">Plan your annual salary dynamically</p>
+        </div>
 
-            {error && <div className="alert alert-danger">{error}</div>}
-            {success && <div className="alert alert-success">{success}</div>}
+        <div className="max-w-md mx-auto mb-8">
+          <label className="block mb-2 font-semibold">Select Year:</label>
+          <input
+            type="number"
+            min="2000"
+            max={new Date().getFullYear() + 5}
+            value={year}
+            onChange={handleYearChange}
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <label htmlFor="amount" className="form-label">
-                  Salary Amount
-                </label>
+        <form onSubmit={handleSubmit}>
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
+            {months.map((month, idx) => (
+              <div key={idx} className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-4 flex flex-col items-center text-center transition-transform hover:scale-105 duration-300">
+                <div className="text-lg font-semibold mb-2">{month}</div>
                 <input
                   type="number"
-                  id="amount"
-                  className="form-control"
-                  placeholder="Enter amount"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  required
+                  min="0"
+                  placeholder="₹ Amount"
+                  value={monthlySalaries[idx] || ""}
+                  onChange={(e) => handleMonthlyChange(idx, e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                 />
               </div>
-
-              <div className="mb-3">
-                <label htmlFor="salaryDate" className="form-label">
-                  Salary Date
-                </label>
-                <input
-                  type="month"
-                  id="salaryDate"
-                  className="form-control"
-                  value={salaryDate}
-                  onChange={(e) => setSalaryDate(e.target.value)}
-                  required
-                />
-              </div>
-
-              <button type="submit" className="btn btn-primary w-100">
-                Submit Salary
-              </button>
-            </form>
+            ))}
           </div>
+
+          {error && <div className="text-red-500 mb-4 text-center font-semibold">{error}</div>}
+          {success && <div className="text-green-500 mb-4 text-center font-semibold">{success}</div>}
+
+          <div className="max-w-md mx-auto">
+            <button type="submit" className="w-full py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-md transition-colors">
+              Save Annual Salary
+            </button>
+          </div>
+        </form>
+
+        <div className="mt-12 max-w-2xl mx-auto text-center text-gray-500 dark:text-gray-400">
+          <p>
+            All empty months are dynamically filled using the nearest entered values. Change any month to adjust ranges automatically.
+          </p>
         </div>
       </div>
     </div>

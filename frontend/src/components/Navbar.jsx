@@ -102,7 +102,7 @@ const Navbar = () => {
             className="ml-2 px-3 py-2 rounded-md text-sm font-medium transition hover:bg-gray-200 dark:hover:bg-gray-700"
             aria-label="Toggle theme"
           >
-            {isDarkMode ? "🌞" : "🌙"}
+            <span className={`text-black! dark:text-white! ${isDarkMode ? "bi bi-sun" : "bi bi-moon"}`} />
           </button>
         </div>
 
