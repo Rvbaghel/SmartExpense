@@ -16,6 +16,23 @@ const Expenses = () => {
   const [expenseData, setExpenseData] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // manual entry state
+  const [manualEntry, setManualEntry] = useState({
+    date: "",
+    category: "",
+    amount: "",
+  });
+
+  const capitalize = (c) => {
+    let words = c.split(' ');
+    let category = "";
+
+    words.forEach(
+      word => category += word.charAt(0).toUpperCase() + word.substring(1).toLocaleLowerCase() + " "
+    )
+    return category.substring(0, category.length - 1)
+  }
+
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem("user"));
     const savedSalary = JSON.parse(localStorage.getItem("currentSalary"));
@@ -115,20 +132,13 @@ const Expenses = () => {
           if (isNaN(Date.parse(rowDate)))
             throw new Error(`Invalid date format in row: ${JSON.stringify(row)}`);
 
-          // Check same month as salary
-          const salaryMonth = new Date(salary.salary_date).getMonth();
-          const expenseMonth = new Date(rowDate).getMonth();
-          if (salaryMonth !== expenseMonth)
-            throw new Error(
-              `Expense date ${rowDate} is not in the same month as salary ${salary.salary_date}`
-            );
-
           const amt = Number(row.amount);
           if (isNaN(amt) || amt <= 0)
             throw new Error(`Invalid amount in row: ${JSON.stringify(row)}`);
 
           cleanedData.push({
             cate_id: categories.indexOf(cat) + 1,
+            category: cat,
             amount: amt,
             expense_date: rowDate,
           });
@@ -144,6 +154,36 @@ const Expenses = () => {
       }
     };
     reader.readAsArrayBuffer(file);
+  };
+
+  const handleManualAdd = () => {
+    setError("");
+    if (!manualEntry.date || !manualEntry.category || !manualEntry.amount) {
+      setError("Please fill all manual entry fields.");
+      return;
+    }
+
+    if (!categories.includes(manualEntry.category.toLowerCase())) {
+      setError("Invalid category selected.");
+      return;
+    }
+
+    const amt = Number(manualEntry.amount);
+    if (isNaN(amt) || amt <= 0) {
+      setError("Invalid amount entered.");
+      return;
+    }
+
+    const newEntry = {
+      cate_id: categories.indexOf(manualEntry.category.toLowerCase()) + 1,
+      category: manualEntry.category,
+      amount: amt,
+      expense_date: manualEntry.date,
+    };
+
+    setExpenseData([...expenseData, newEntry]);
+    setManualEntry({ date: "", category: "", amount: "" });
+    setSuccess("Entry added successfully!");
   };
 
   const handleSubmit = async () => {
@@ -164,10 +204,8 @@ const Expenses = () => {
       });
 
       const data = await res.json();
-      console.log("Expense submission response:", data);
-
       if (data.success) {
-        setSuccess("Expenses submitted successfully! Redirecting to review...");
+        setSuccess("Expenses submitted successfully! Redirecting...");
         setTimeout(() => navigate("/review", { replace: true }), 2000);
         setExpenseData([]);
       } else {
@@ -180,190 +218,106 @@ const Expenses = () => {
     }
   };
 
-  const demoData = [
-    { category: "Food & Groceries", amount: 2500, date: "2025-01-05" },
-    { category: "Rent", amount: 10000, date: "2025-01-01" },
-    { category: "Electricity Bill", amount: 1200, date: "2025-01-10" },
-    { category: "Traveling", amount: 1500, date: "2025-01-15" },
-    { category: "Entertainment", amount: 800, date: "2025-01-20" },
-  ];
-
   if (loading) return <Loader />;
 
   return (
-    <div className={`container py-5 ${isDarkMode ? "dark-theme" : "light-theme"}`}>
-      <div className="row">
-        <div className="col-lg-8 mx-auto">
-          {/* Header Section */}
-          <div className="text-center mb-4">
-            <div className="mb-3">
-              <i className="bi bi-receipt-cutoff text-primary" style={{ fontSize: '3rem' }}></i>
-            </div>
-            <h2 className="fw-bold mb-2">Upload Your Monthly Expenses</h2>
-            {user && salary && (
-              <div className="mb-3">
-                <p className="mb-1">Welcome back, <strong>{user.username}</strong>!</p>
-                <div className="d-flex justify-content-center gap-4 flex-wrap">
-                  <span className="badge bg-success px-3 py-2">
-                    Salary: ₹{salary.amount}
-                  </span>
-                  <span className="badge bg-info px-3 py-2">
-                    <i className="bi bi-calendar-month me-1"></i>
-                    Month: {new Date(salary.salary_date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Progress Indicator */}
-          <div className="mb-4">
-            <div className="d-flex justify-content-between align-items-center mb-2">
-              <small className="text-muted">Step 2 of 4</small>
-              <small className="text-muted">50% Complete</small>
-            </div>
-            <div className="progress" style={{ height: '3px' }}>
-              <div className="progress-bar bg-primary" style={{ width: '50%' }}></div>
-            </div>
-          </div>
-
-          {/* Alert Messages */}
-          {error && (
-            <div className="alert alert-danger d-flex align-items-center mb-4" role="alert">
-              <i className="bi bi-exclamation-triangle-fill me-2"></i>
-              {error}
-            </div>
-          )}
-          {success && (
-            <div className="alert alert-success d-flex align-items-center mb-4" role="alert">
-              <i className="bi bi-check-circle-fill me-2"></i>
-              {success}
-            </div>
-          )}
-
-          {/* File Upload Section */}
-          <div className="card border-0 shadow-sm mb-4">
-            <div className="card-body p-4">
-              <div className="d-flex align-items-center mb-3">
-                <i className="bi bi-cloud-upload text-primary me-3" style={{ fontSize: '1.5rem' }}></i>
-                <div>
-                  <h5 className="mb-1">Upload Expense File</h5>
-                  <p className="text-muted mb-0">CSV or Excel format accepted</p>
-                </div>
-              </div>
-
-              <input
-                type="file"
-                id="fileUpload"
-                className="form-control"
-                accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                onChange={handleFileUpload}
-              />
-              <div className="form-text mt-2">
-                <i className="bi bi-info-circle me-1"></i>
-                File must contain columns: <strong>category, amount, date</strong>
-              </div>
-            </div>
-          </div>
-
-          {/* Data Preview */}
-          {expenseData.length > 0 && (
-            <div className="alert alert-info mb-4">
-              <i className="bi bi-file-earmark-check me-2"></i>
-              <strong>{expenseData.length}</strong> expense entries validated and ready to submit.
-            </div>
-          )}
-
-          {/* Submit Button */}
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <button
-              type="button"
-              className="btn btn-outline-secondary"
-              onClick={() => navigate('/salary-input')}
-            >
-              <i className="bi bi-arrow-left me-2"></i>
-              Back to Salary
-            </button>
-
-            <button
-              className="btn btn-primary"
-              onClick={handleSubmit}
-              disabled={!expenseData.length}
-            >
-              <i className="bi bi-check-circle me-2"></i>
-              Submit & Continue
-            </button>
-          </div>
-
-          {/* Demo Format Section */}
-          <div className="card border-0 shadow-sm">
-            <div className="card-header bg-light border-0">
-              <h5 className="mb-0">
-                <i className="bi bi-table me-2"></i>
-                Required File Format
-              </h5>
-            </div>
-            <div className="card-body">
-              <p className="text-muted mb-3">
-                Your CSV/Excel file must contain exactly these three columns with the correct spelling:
-              </p>
-              <div className="table-responsive">
-                <table className="table table-hover">
-                  <thead className="table-light">
-                    <tr>
-                      <th><i className="bi bi-tag me-1"></i>category</th>
-                      <th><i className="bi bi-currency-rupee me-1"></i>amount</th>
-                      <th><i className="bi bi-calendar3 me-1"></i>date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {demoData.map((row, idx) => (
-                      <tr key={idx}>
-                        <td>{row.category}</td>
-                        <td>₹{row.amount.toLocaleString()}</td>
-                        <td>{row.date}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+    <div className={`min-h-screen py-8 px-4 sm:px-6 lg:px-8 ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"}`}>
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-6">
+          <i className="bi bi-receipt-cutoff text-blue-500 text-5xl"></i>
+          <h2 className="mt-3 text-2xl font-bold">Upload or Add Your Monthly Expenses</h2>
         </div>
 
-        {/* Categories Sidebar */}
-        <div className="col-lg-4 mt-4 mt-lg-0">
-          <div className="card border-0 shadow-sm sticky-top" style={{ top: '2rem' }}>
-            <div className="card-header bg-light border-0">
-              <h5 className="mb-0">
-                <i className="bi bi-list-check me-2"></i>
-                Allowed Categories
-              </h5>
-            </div>
-            <div className="card-body p-0">
-              <div className="list-group list-group-flush">
-                {categories.map((cat, idx) => (
-                  <div key={idx} className="list-group-item d-flex align-items-center">
-                    <i className="bi bi-check-circle text-success me-2"></i>
-                    <span style={{ textTransform: 'capitalize' }}>{cat}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+        {/* File Upload */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6 mb-6">
+          <h3 className="text-lg font-semibold mb-2">Upload Expense File</h3>
+          <input
+            type="file"
+            accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            onChange={handleFileUpload}
+            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 dark:file:bg-gray-700 dark:file:text-white hover:file:bg-blue-100 dark:hover:file:bg-gray-600"
+          />
+          <p className="mt-2 text-sm text-gray-400">CSV or Excel with columns: category, amount, date</p>
+        </div>
 
-            {/* Quick Tips */}
-            <div className="card-footer bg-light border-0">
-              <h6 className="mb-2">
-                <i className="bi bi-lightbulb text-warning me-2"></i>
-                Quick Tips
-              </h6>
-              <ul className="mb-0 ps-3">
-                <li><small>Use exact category names</small></li>
-                <li><small>Date format: YYYY-MM-DD</small></li>
-                <li><small>Amount should be positive numbers</small></li>
-              </ul>
+        {/* Manual Entry */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6 mb-6">
+          <h3 className="text-lg font-semibold mb-4">Add Expense Manually</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <input
+              type="date"
+              value={manualEntry.date}
+              onChange={(e) => setManualEntry({ ...manualEntry, date: e.target.value })}
+              className="px-3 py-2 border rounded-md dark:bg-gray-900 dark:border-gray-700"
+            />
+            <select
+              value={manualEntry.category}
+              onChange={(e) => setManualEntry({ ...manualEntry, category: e.target.value })}
+              className="px-3 py-2 border rounded-md dark:bg-gray-900 dark:border-gray-700"
+            >
+              <option value="">Select Category</option>
+              {categories.map((c, idx) => (
+                <option key={idx} value={capitalize(c)} className="capitalize">{capitalize(c)}</option>
+              ))}
+            </select>
+            <input
+              type="number"
+              placeholder="Amount"
+              value={manualEntry.amount}
+              onChange={(e) => setManualEntry({ ...manualEntry, amount: e.target.value })}
+              className="px-3 py-2 border rounded-md dark:bg-gray-900 dark:border-gray-700"
+            />
+          </div>
+          <button
+            onClick={handleManualAdd}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            Add Entry
+          </button>
+        </div>
+
+        {/* Preview Entries */}
+        {expenseData.length > 0 && (
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6 mb-6">
+            <h3 className="text-lg font-semibold mb-4">Added/Validated Entries</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm border-collapse">
+                <thead className="bg-gray-100 dark:bg-gray-700">
+                  <tr>
+                    <th className="px-3 py-2 text-left">Date</th>
+                    <th className="px-3 py-2 text-left">Category</th>
+                    <th className="px-3 py-2 text-left">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {expenseData.map((row, idx) => (
+                    <tr key={idx} className="border-b dark:border-gray-700">
+                      <td className="px-3 py-2">{row.expense_date}</td>
+                      <td className="px-3 py-2 capitalize">{row.category}</td>
+                      <td className="px-3 py-2">₹{row.amount.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
+        )}
+
+        {/* Submit */}
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={() => navigate("/salary-input")}
+            className="px-4 py-2 border rounded-md bg-gray-200 dark:bg-gray-700"
+          >
+            Back to Salary
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={!expenseData.length}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50"
+          >
+            Submit & Continue
+          </button>
         </div>
       </div>
     </div>
