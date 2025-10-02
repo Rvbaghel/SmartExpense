@@ -1,6 +1,6 @@
 import traceback
 from flask import Blueprint, request, jsonify
-from models.salary_model import insert_salary, get_salaries_by_user, create_salary_table
+from models.salary_model import insert_salary, get_salaries_by_user, create_salary_table, delete_salaries
 
 salary_bp = Blueprint("salary", __name__, url_prefix="/salary")
 create_salary_table()
@@ -51,3 +51,11 @@ def get_latest_salary(user_id):
         return jsonify({"success": False, "error": "No salary found"}), 404
     latest = salaries[0]  # assuming DESC order
     return jsonify({"success": True, "salary": latest}), 200
+
+@salary_bp.route("/delete/<int:user_id>")
+def delete_salaries(user_id):
+    message = delete_salaries(user_id)
+
+    if not message:
+        return jsonify({"success": False, "error": "No salary found"}), 404
+    return jsonify({"success": True, "salary": message}), 200

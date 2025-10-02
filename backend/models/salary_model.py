@@ -69,3 +69,23 @@ def get_salaries_by_user(user_id):
     salaries = cursor.fetchall()
     conn.close()
     return salaries
+
+
+def delete_salaries(user_id):
+    """
+    Delete all salaries for a user
+    """
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        cursor.execute(
+            "DELETE FROM salary where user_id = %s",
+            (user_id)
+        )
+        conn.commit()
+        return "Deleted Successfully"
+    except psycopg2.Error as e:
+        conn.rollback()
+        raise Exception(f"Database error while deleting user salary: {str(e)}")
+    finally:
+        conn.close()

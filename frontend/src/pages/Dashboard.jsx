@@ -31,32 +31,43 @@ const Dashboard = () => {
     "July", "August", "September", "October", "November", "December"
   ];
 
-  // years from 2022 → current
-  const years = Array.from({ length: new Date().getFullYear() - 2022 + 1 }, (_, i) => 2022 + i);
+  const years = Array.from(
+    { length: new Date().getFullYear() - 2022 + 1 },
+    (_, i) => 2022 + i
+  );
 
-  // fetch data optimized
-  const fetchDashboardData = useCallback(async (uid, y, m) => {
+  // Optimized fetch with abort + debounce
+  const fetchDashboardData = useCallback(async (uid, y, m, controller) => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/dashboard/charts/${uid}?month=${m}&year=${y}`);
+      const res = await fetch(`${API_URL}/dashboard/charts/${uid}?month=${m}&year=${y}`, {
+        signal: controller.signal
+      });
       const data = await res.json();
+      if (!data.success) throw new Error(data.error || "Failed to load dashboard charts");
 
-      if (!data.success) {
-        throw new Error(data.error || "Failed to load dashboard data");
-      }
+      const r = await fetch(`${API_URL}/dashboard/summary/${uid}?month=${m}&year=${y}`, {
+        signal: controller.signal
+      });
+      const d = await r.json();
+      if (!d.success) throw new Error(d.error || "Failed to load dashboard summary");
+
+      // attach summary into charts for unified access
+      data.charts["monthly_expense"] = d.summary;
 
       setDashboardData(data);
-
       setError("");
     } catch (err) {
-      setError(err.message);
-      setDashboardData(null);
+      if (err.name !== "AbortError") {
+        setError(err.message);
+        setDashboardData(null);
+      }
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Load once + when month/year changes
+  // Effect for loading data (with debounce + cancel)
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem("user"));
     if (!savedUser) {
@@ -65,14 +76,18 @@ const Dashboard = () => {
     }
     setUser(savedUser);
 
+    const controller = new AbortController();
     const timeout = setTimeout(() => {
-      fetchDashboardData(savedUser.id, year, month);
-    }, 300); // debounce API calls on fast switching
+      fetchDashboardData(savedUser.id, year, month, controller);
+    }, 400); // debounce for fast switching
 
-    return () => clearTimeout(timeout);
+    return () => {
+      controller.abort();
+      clearTimeout(timeout);
+    };
   }, [navigate, month, year, fetchDashboardData]);
 
-  // Transform chart data only when dashboardData changes
+  // Transform chart data
   const {
     expenseCategoryBarData,
     expenseCategoryPieData,
@@ -84,37 +99,46 @@ const Dashboard = () => {
     if (!dashboardData) return {};
 
     const charts = dashboardData.charts || {};
-    console.log(charts)
-
-
 
     return {
-      // 1. Expense by Category (Bar)
-      expenseCategoryBarData: charts.expense_by_category_bar?.x?.map((cat, i) => ({
-        category: cat,
-        amount: charts.expense_by_category_bar.y[i]
-      })) || [],
+      // Expense by Category (Bar)
+      expenseCategoryBarData:
+        charts.expense_by_category_bar?.x?.map((cat, i) => ({
+          category: cat,
+          amount: charts.expense_by_category_bar.y[i]
+        })) || [],
 
-      // 2. Expense by Category (Pie)
-      expenseCategoryPieData: charts.expense_by_category_pie?.y?.map((cat, i) => ({
-        name: cat,
-        value: charts.expense_by_category_pie.x[i]
-      })) || [],
+      // Expense by Category (Pie)
+      expenseCategoryPieData:
+        charts.expense_by_category_pie?.y?.map((cat, i) => ({
+          name: cat,
+          value: charts.expense_by_category_pie.x[i]
+        })) || [],
 
-      // 3. Expense Trend (Line)
-      expenseTrendData: charts.expense_trend?.x?.map((date, i) => ({
-        date,
-        amount: charts.expense_trend.y[i]
-      })) || [],
+      // Expense Trend (Line)
+      expenseTrendData:
+        charts.expense_trend?.x?.map((date, i) => ({
+          date,
+          amount: charts.expense_trend.y[i]
+        })) || [],
 
-      // 4. Salary Trend (Line)
-      salaryTrendData: charts.salary_trend?.x?.map((date, i) => ({
-        date,
-        salary: charts.salary_trend.y[i]
-      })) || [],
+      // Salary Trend (Line)
+      salaryTrendData:
+        charts.salary_trend?.x?.map((date, i) => ({
+          date,
+          salary: charts.salary_trend.y[i]
+        })) || [],
 
-      // 5. Monthly Expense (backend can send directly, otherwise compute)
-      monthlyExpenseData: charts.monthly_expense || [],
+      // Monthly Expense & Salary (from summary API)
+      monthlyExpenseData:
+        charts.monthly_expense?.map((entry) => ({
+          month: months[entry.month - 1],
+          year: entry.year,
+          total_expenses: entry.total_expenses,
+          total_salary: entry.total_salary,
+          cumulative_expenses: entry.cumulative_expenses,
+          cumulative_salary: entry.cumulative_salary
+        })) || [],
 
       stats: {
         totalSalary: dashboardData.salary || 0,
@@ -124,8 +148,16 @@ const Dashboard = () => {
       }
     };
 
-
   }, [dashboardData]);
+
+  console.log(
+    expenseCategoryBarData,
+    expenseCategoryPieData,
+    expenseTrendData,
+    salaryTrendData,
+    monthlyExpenseData,
+    stats
+  )
 
   if (loading) {
     return (
@@ -213,16 +245,27 @@ const Dashboard = () => {
             <BarChart data={expenseCategoryBarData}>
               <XAxis dataKey="category" />
               <YAxis />
-              <Tooltip />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: isDarkMode ? "#1f2937" : "#f9fafb",
+                  color: isDarkMode ? "#e5e7eb" : "#374151",
+                  borderRadius: "0.5rem",
+                  border: "none"
+                }}
+              />
               <Legend />
               <Bar dataKey="amount" fill="var(--color-sky-500)" color="var(--color-teal-500)" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Expense by Category Pie */}
-        <div className="p-4 border rounded-lg shadow bg-white dark:bg-gray-800">
-          <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-500 ">Expense by Category (Pie)</h2>
+
+        {/* Expense by Category (Pie) */}
+        <div className={`p-4 border rounded-lg shadow transition 
+    ${isDarkMode ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`}>
+          <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-400">
+            Expense by Category (Pie)
+          </h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -232,59 +275,129 @@ const Dashboard = () => {
                 cx="50%"
                 cy="50%"
                 outerRadius={100}
-                fill="#8884d8"
-                label
+                label={{ fill: isDarkMode ? "#e5e7eb" : "#374151" }} // tailwind gray-200 / gray-700
               >
                 {expenseCategoryPieData.map((entry, index) => (
-                  <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                  <Cell
+                    key={index}
+                    fill={isDarkMode
+                      ? ["#22d3ee", "#34d399", "#facc15", "#f87171", "#c084fc"][index % 5] // sky-400, green-400, yellow-400, red-400, purple-400
+                      : ["#0284c7", "#059669", "#ca8a04", "#dc2626", "#9333ea"][index % 5]} // sky-600, green-600, yellow-600, red-600, purple-600
+                  />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: isDarkMode ? "var(--color-gray-700)" : "#f9fafb", // dark:bg-gray-800, light:bg-gray-50
+                  color: isDarkMode ? "#e5e7eb" : "#374151", // dark:text-gray-200, light:text-gray-700
+                  borderRadius: "0.5rem",
+                  border: "none"
+                }}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>
 
         {/* Expense Trend */}
-        <div className="p-4 border rounded-lg shadow bg-white dark:bg-gray-800">
-          <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-500 ">Expense Trend</h2>
+        <div className={`p-4 border rounded-lg shadow transition 
+    ${isDarkMode ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`}>
+          <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-400">
+            Expense Trend
+          </h2>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={expenseTrendData}>
-              <XAxis dataKey="date" tickFormatter={(str) => format(parseISO(str), "MMM d")} />
-              <YAxis />
-              <Tooltip labelFormatter={(str) => format(parseISO(str), "MMM d, yyyy")} />
-              <Legend />
-              <Line type="monotone" dataKey="amount" stroke="#82ca9d" />
+              <XAxis
+                dataKey="date"
+                tick={{ fill: isDarkMode ? "#e5e7eb" : "#374151" }}
+                tickFormatter={(str) => format(parseISO(str), "MMM d")}
+              />
+              <YAxis tick={{ fill: isDarkMode ? "#e5e7eb" : "#374151" }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: isDarkMode ? "#1f2937" : "#f9fafb",
+                  color: isDarkMode ? "#e5e7eb" : "#374151",
+                  borderRadius: "0.5rem",
+                  border: "none"
+                }}
+                labelFormatter={(str) => format(parseISO(str), "MMM d, yyyy")}
+              />
+              <Legend wrapperStyle={{ color: isDarkMode ? "#e5e7eb" : "#374151" }} />
+              <Line
+                type="monotone"
+                dataKey="amount"
+                stroke={isDarkMode ? "#34d399" : "#059669"} // green-400 / green-600
+                strokeWidth={2}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
         {/* Salary Trend */}
-        <div className="p-4 border rounded-lg shadow bg-white dark:bg-gray-800">
-          <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-500 ">Salary Trend</h2>
+        <div className={`p-4 border rounded-lg shadow transition 
+    ${isDarkMode ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`}>
+          <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-400">
+            Salary Trend
+          </h2>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={salaryTrendData}>
-              <XAxis dataKey="date" tickFormatter={(str) => format(parseISO(str), "MMM yyyy")} />
-              <YAxis />
-              <Tooltip labelFormatter={(str) => format(parseISO(str), "MMM yyyy")} />
-              <Legend />
-              <Line type="monotone" dataKey="salary" stroke="#ff8042" />
+              <XAxis
+                dataKey="date"
+                tick={{ fill: isDarkMode ? "#e5e7eb" : "#374151" }}
+                tickFormatter={(str) => format(parseISO(str), "MMM yyyy")}
+              />
+              <YAxis tick={{ fill: isDarkMode ? "#e5e7eb" : "#374151" }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: isDarkMode ? "#1f2937" : "#f9fafb",
+                  color: isDarkMode ? "#e5e7eb" : "#374151",
+                  borderRadius: "0.5rem",
+                  border: "none"
+                }}
+                labelFormatter={(str) => format(parseISO(str), "MMM yyyy")}
+              />
+              <Legend wrapperStyle={{ color: isDarkMode ? "#e5e7eb" : "#374151" }} />
+              <Line
+                type="monotone"
+                dataKey="salary"
+                stroke={isDarkMode ? "#f87171" : "#dc2626"} // red-400 / red-600
+                strokeWidth={2}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
         {/* Monthly Expense */}
-        <div className="p-4 border rounded-lg shadow bg-white dark:bg-gray-800 col-span-1 md:col-span-2">
-          <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-500 ">Monthly Expense</h2>
+        <div className={`p-4 border rounded-lg shadow transition col-span-1 md:col-span-2 
+    ${isDarkMode ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`}>
+          <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-400">
+            Monthly Expense
+          </h2>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={expenseCategoryBarData}>
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="total" fill="#003f5c" />
+            <BarChart data={monthlyExpenseData}>
+              <XAxis
+                dataKey="month"
+                tick={{ fill: isDarkMode ? "#e5e7eb" : "#374151" }}
+              />
+              <YAxis tick={{ fill: isDarkMode ? "#e5e7eb" : "#374151" }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: isDarkMode ? "#1f2937" : "#f9fafb",
+                  color: isDarkMode ? "#e5e7eb" : "#374151",
+                  borderRadius: "0.5rem",
+                  border: "none"
+                }}
+              />
+              <Legend wrapperStyle={{ color: isDarkMode ? "#e5e7eb" : "#374151" }} />
+              <Bar
+                dataKey="total"
+                fill={isDarkMode ? "#22d3ee" : "#0284c7"} // sky-400 / sky-600
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
+
+
+
       </div>
     </div>
   );
