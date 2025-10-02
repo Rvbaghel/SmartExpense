@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 import pandas as pd
-from models.expense_model import insert_expense, get_all_expenses
+import datetime
+from models.expense_model import insert_expense, get_all_expenses, delete_expenses
 
 expense_bp = Blueprint("expense", __name__, url_prefix="/expense")
 
@@ -12,6 +13,18 @@ def all_expenses():
     """
     try:
         expenses = get_all_expenses()
+        return jsonify({"success": True, "expenses": expenses}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@expense_bp.route("/delete")
+def delete_expenses():
+
+    month = int( request.args.get("month") or datetime.datetime.now().month )
+    year = int( request.args.get("year") or datetime.datetime.now().year )
+
+    try:
+        expenses = delete_expenses()
         return jsonify({"success": True, "expenses": expenses}), 200
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500

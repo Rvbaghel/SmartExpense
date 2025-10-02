@@ -85,6 +85,42 @@ def get_all_expenses():
     conn.close()
     return expenses
 
+def delete_expenses(month, year):
+    """
+    Delete all expenses for a given month and year.
+    """
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+
+        query = """
+            DELETE FROM expense
+            WHERE EXTRACT(MONTH FROM expense_date) = %s
+              AND EXTRACT(YEAR FROM expense_date) = %s
+            RETURNING id;
+        """
+
+        cursor.execute(query, (month, year))
+        deleted_rows = cursor.fetchall()  # List of deleted expense IDs
+        conn.commit()
+
+        return {
+            "success": True,
+            "deleted_count": len(deleted_rows),
+            "deleted_ids": [row["id"] for row in deleted_rows]
+        }
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        return {"success": False, "error": str(e)}
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
 
 # ✅ Call this once when module is loaded so tables are ready
 create_expense_table()
