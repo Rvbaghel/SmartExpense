@@ -11,7 +11,7 @@ category_bp = Blueprint("category", __name__, url_prefix="/category")
 
 # Ensure table + default data exist when server starts
 create_category_table()
-insert_default_categories()
+# insert_default_categories()
 
 
 @category_bp.route("/all", methods=["GET"])
