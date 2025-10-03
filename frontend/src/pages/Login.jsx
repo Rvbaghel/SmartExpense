@@ -49,50 +49,50 @@ const Login = () => {
   return (
     <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
       {/* ✅ Countdown overlay */}
-      {loading && <Loader />}
+      {loading ? <Loader /> :
 
-      <div className="feature-card" style={{ width: "100%", maxWidth: "420px" }}>
-        <h2 className="text-center mb-4">Login</h2>
+        <div className="feature-card" style={{ width: "100%", maxWidth: "420px" }}>
+          <h2 className="text-center mb-4">Login</h2>
 
-        {error && <p className="text-danger text-center">{error}</p>}
+          {error && <p className="text-danger text-center">{error}</p>}
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              className="form-control"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                className="form-control"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-          <div className="mb-3">
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
+            <div className="mb-3">
+              <label>Password</label>
+              <input
+                type="password"
+                name="password"
+                className="form-control"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-          <button type="submit" className="btn btn-primary w-100">
-            Login
-          </button>
-        </form>
+            <button type="submit" className="btn btn-primary w-100">
+              Login
+            </button>
+          </form>
 
-        <p className="text-center mt-3">
-          Don’t have an account?{" "}
-          <Link to="/signup" style={{ color: "var(--bs-primary)" }}>
-            Sign Up
-          </Link>
-        </p>
-      </div>
+          <p className="text-center mt-3">
+            Don’t have an account?{" "}
+            <Link to="/signup" style={{ color: "var(--bs-primary)" }}>
+              Sign Up
+            </Link>
+          </p>
+        </div>}
     </div>
   );
 };
