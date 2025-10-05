@@ -45,10 +45,10 @@ const Navbar = () => {
         {/* Brand */}
         <Link
           to="/"
-          className="text-xl font-bold no-underline flex items-center gap-1"
+          className="text-xl font-bold no-underline flex flex-row gap-2 items-center gap-1"
         >
-          <span className="text-sky-500 dark:text-teal-400">Smart</span>
-          <span className="text-gray-900 dark:text-gray-100">Expense</span>
+          <img src="logo.png" className="size-12" />
+          <span className="text-sky-500 dark:text-teal-400">Smart</span>Expense
         </Link>
 
         {/* Mobile toggle */}
