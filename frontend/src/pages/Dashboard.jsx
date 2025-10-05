@@ -5,7 +5,8 @@ import { API_URL } from "../config";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell,
-  LineChart, Line
+  LineChart, Line,
+  CartesianGrid
 } from "recharts";
 import { format, parseISO } from "date-fns";
 
@@ -99,6 +100,7 @@ const Dashboard = () => {
     if (!dashboardData) return {};
 
     const charts = dashboardData.charts || {};
+    console.log("Charts", dashboardData.charts)
 
     return {
       // Expense by Category (Bar)
@@ -131,33 +133,31 @@ const Dashboard = () => {
 
       // Monthly Expense & Salary (from summary API)
       monthlyExpenseData:
-        charts.monthly_expense?.map((entry) => ({
+        [{
+          month: '',
+          year: 2025,
+          total_expenses: 0,
+          total_salary: 0,
+          cumulative_expenses: 0,
+          cumulative_salary: 0
+        }, ...charts.monthly_expense?.map((entry) => ({
           month: months[entry.month - 1],
           year: entry.year,
           total_expenses: entry.total_expenses,
           total_salary: entry.total_salary,
           cumulative_expenses: entry.cumulative_expenses,
           cumulative_salary: entry.cumulative_salary
-        })) || [],
+        })) || []],
 
       stats: {
-        totalSalary: dashboardData.salary || 0,
-        totalExpenses: dashboardData.total_expenses || 0,
-        remainingAmount: (dashboardData.salary || 0) - (dashboardData.total_expenses || 0),
-        expenseCount: dashboardData.expense_count || 0
+        totalSalary: charts.monthly_expense[months.length - 1].cumulative_salary || 0,
+        totalExpenses: charts.monthly_expense[months.length - 1].cumulative_expenses || 0,
+        remainingAmount: (charts.monthly_expense[months.length - 1].cumulative_salary || 0) - (charts.monthly_expense[months.length - 1].cumulative_expenses || 0),
+        expenseCount: charts.expense_trend.x.length || 0
       }
     };
 
   }, [dashboardData]);
-
-  console.log(
-    expenseCategoryBarData,
-    expenseCategoryPieData,
-    expenseTrendData,
-    salaryTrendData,
-    monthlyExpenseData,
-    stats
-  )
 
   if (loading) {
     return (
@@ -188,20 +188,122 @@ const Dashboard = () => {
     <div className={`min-h-screen px-6 md:px-12 py-6 transition ${isDarkMode ? "bg-gray-900 text-gray-100" : "bg-gray-50 text-gray-800"}`}>
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        {/* Left Side */}
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
-            <i className="bi bi-graph-up text-sky-500"></i>
+            <i className="bi bi-graph-up text-sky-500 dark:text-teal-400"></i>
             Financial Dashboard
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Welcome back, <strong>{user?.username}</strong>! Here's your financial overview.
           </p>
         </div>
+
+        {/* Right Side */}
+        <div className="text-right">
+          <small className="block text-gray-500 dark:text-gray-400">Step 4 of 4</small>
+          <small className="block text-green-500 font-semibold">100% Complete!</small>
+          <div className="w-32 h-1 bg-gray-200 dark:bg-gray-700 rounded-full mt-1 overflow-hidden">
+            <div className="h-full bg-green-500 w-full transition-all duration-700"></div>
+          </div>
+        </div>
       </div>
 
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        {/* Total Salary */}
+        <div
+          className={`p-4 rounded-xl shadow-sm border transition-colors 
+      ${isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}
+        >
+          <div className="flex items-center">
+            <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+              <i className="bi bi-cash-coin text-green-600 dark:text-green-400 text-2xl"></i>
+            </div>
+            <div className="ml-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Total Salary</p>
+              <h4 className="text-2xl font-semibold text-green-600 dark:text-green-400">
+                ₹{stats.totalSalary.toLocaleString()}
+              </h4>
+            </div>
+          </div>
+        </div>
+
+        {/* Total Expenses */}
+        <div
+          className={`p-4 rounded-xl shadow-sm border transition-colors 
+      ${isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}
+        >
+          <div className="flex items-center">
+            <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
+              <i className="bi bi-receipt text-red-600 dark:text-red-400 text-2xl"></i>
+            </div>
+            <div className="ml-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Total Expenses</p>
+              <h4 className="text-2xl font-semibold text-red-600 dark:text-red-400">
+                ₹{stats.totalExpenses.toLocaleString()}
+              </h4>
+            </div>
+          </div>
+        </div>
+
+        {/* Remaining Amount */}
+        <div
+          className={`p-4 rounded-xl shadow-sm border transition-colors 
+      ${isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}
+        >
+          <div className="flex items-center">
+            <div
+              className={`p-3 rounded-lg ${stats.remainingAmount >= 0
+                ? "bg-blue-100 dark:bg-blue-900/30"
+                : "bg-yellow-100 dark:bg-yellow-900/30"
+                }`}
+            >
+              <i
+                className={`bi bi-wallet text-2xl ${stats.remainingAmount >= 0
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-yellow-600 dark:text-yellow-400"
+                  }`}
+              ></i>
+            </div>
+            <div className="ml-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Remaining Amount</p>
+              <h4
+                className={`text-2xl font-semibold ${stats.remainingAmount >= 0
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-yellow-600 dark:text-yellow-400"
+                  }`}
+              >
+                ₹{stats.remainingAmount.toLocaleString()}
+              </h4>
+            </div>
+          </div>
+        </div>
+
+        {/* Total Entries */}
+        <div
+          className={`p-4 rounded-xl shadow-sm border transition-colors 
+      ${isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}
+        >
+          <div className="flex items-center">
+            <div className="p-3 bg-sky-100 dark:bg-sky-900/30 rounded-lg">
+              <i className="bi bi-list-ul text-sky-600 dark:text-sky-400 text-2xl"></i>
+            </div>
+            <div className="ml-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400">Total Entries</p>
+              <h4 className="text-2xl font-semibold text-sky-600 dark:text-sky-400">
+                {stats.expenseCount}
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
       {/* Year Selector */}
-      <div className="flex justify-center gap-3 mb-6">
+      <div className="flex justify-center gap-3 my-6">
         {years.map((y) => (
           <button
             key={y}
@@ -232,15 +334,51 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <h3 className="text-xl font-semibold text-sky-500 mb-6 text-center">
-        {months[month - 1]} - {year}
-      </h3>
+      {/* Header Section with Month and Actions */}
+      <div className="flex flex-col md:flex-row justify-between items-center align-items-center place-items-center gap-4 mb-6 p-4 
+  bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm transition">
+
+        {/* Month-Year Display */}
+        <h3 className="text-2xl font-semibold text-sky-600 dark:text-teal-400 text-center md:text-left">
+          {months[month - 1]} - {year}
+        </h3>
+
+        {/* Action Buttons */}
+        <div className="flex flex-row gap-3 ">
+          {/* Predict Button */}
+          <button
+            className="flex items-center gap-2 px-4 py-2 rounded-xl 
+      bg-gradient-to-r from-violet-600 to-purple-700 
+      text-white font-medium shadow-md hover:shadow-lg 
+      hover:from-violet-500 hover:to-purple-600 
+      active:scale-95 transition transform duration-200 ease-in-out"
+          >
+            <i className="bi bi-stars text-rose-300"></i>
+            Predict
+          </button>
+
+          {/* Recommend Button */}
+          <button
+            className="flex items-center gap-2 px-4 py-2 rounded-xl 
+      bg-gradient-to-r from-rose-600 to-pink-700 
+      text-white font-medium shadow-md hover:shadow-lg 
+      hover:from-rose-500 hover:to-pink-600 
+      active:scale-95 transition transform duration-200 ease-in-out"
+          >
+            <i className="bi bi-lightbulb text-purple-300"></i>
+            Recommend
+          </button>
+        </div>
+      </div>
+
+
 
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
         {/* Expense by Category Bar */}
-        <div className="p-4 border rounded-lg shadow bg-white dark:bg-gray-800">
-          <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-500 ">Expense by Category (Bar)</h2>
+        <div className={`p-4 border rounded-lg shadow transition 
+    ${isDarkMode ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`}>
+          <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-400 ">Expense by Category (Bar)</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={expenseCategoryBarData}>
               <XAxis dataKey="category" />
@@ -366,14 +504,53 @@ const Dashboard = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Monthly Expense */}
-        <div className={`p-4 border rounded-lg shadow transition col-span-1 md:col-span-2 
+        {/* Yearly Difference */}
+        <div className={`p-4 border rounded-lg shadow transition 
     ${isDarkMode ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`}>
           <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-400">
-            Monthly Expense
+            Progress of Salary and Expense
           </h2>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={monthlyExpenseData}>
+            <LineChart data={monthlyExpenseData}>
+              <XAxis
+                dataKey="month"
+                tick={{ fill: isDarkMode ? "#e5e7eb" : "#374151" }}
+              />
+              <YAxis tick={{ fill: isDarkMode ? "#e5e7eb" : "#374151" }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: isDarkMode ? "#1f2937" : "#f9fafb",
+                  color: isDarkMode ? "#e5e7eb" : "#374151",
+                  borderRadius: "0.5rem",
+                  border: "none"
+                }}
+              />
+              <Legend wrapperStyle={{ color: isDarkMode ? "#e5e7eb" : "#374151" }} />
+              <Line
+                type="monotone"
+                dataKey="cumulative_salary"
+                stroke={isDarkMode ? "var(--color-green-400)" : "var(--color-green-600)"} // red-400 / red-600
+                strokeWidth={2}
+              />
+              <Line
+                type="monotone"
+                dataKey="cumulative_expenses"
+                stroke={isDarkMode ? "var(--color-red-400)" : "var(--color-red-600)"} // red-400 / red-600
+                strokeWidth={2}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Monthly Salary vs Expense */}
+        <div className={`p-4 border rounded-lg shadow transition 
+    ${isDarkMode ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`}>
+          <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-400">
+            Salary and Expense Distribution
+          </h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={monthlyExpenseData.slice(1)}>
+              <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="month"
                 tick={{ fill: isDarkMode ? "#e5e7eb" : "#374151" }}
@@ -389,14 +566,16 @@ const Dashboard = () => {
               />
               <Legend wrapperStyle={{ color: isDarkMode ? "#e5e7eb" : "#374151" }} />
               <Bar
-                dataKey="total"
-                fill={isDarkMode ? "#22d3ee" : "#0284c7"} // sky-400 / sky-600
+                dataKey="total_salary"
+                fill={isDarkMode ? "var(--color-green-400)" : "var(--color-green-600)"} // red-400 / red-600
+              />
+              <Bar
+                dataKey="total_expenses"
+                fill={isDarkMode ? "var(--color-red-400)" : "var(--color-red-600)"} // red-400 / red-600
               />
             </BarChart>
           </ResponsiveContainer>
         </div>
-
-
 
       </div>
     </div>

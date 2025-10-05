@@ -10,7 +10,7 @@ const Login = () => {
 
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // ✅ loading state
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,7 +20,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true); // ✅ start countdown
+    setLoading(true);
 
     try {
       const res = await fetch(`${API_URL}/auth/login`, {
@@ -34,7 +34,7 @@ const Login = () => {
 
       if (res.ok) {
         login(result.user);
-        navigate("/"); // redirect to dashboard/home
+        navigate("/");
       } else {
         setError(result.error || "Login failed");
       }
@@ -42,57 +42,107 @@ const Login = () => {
       console.error("Fetch error:", err);
       setError("Failed to connect to server");
     } finally {
-      setLoading(false); // ✅ stop countdown
+      setLoading(false);
     }
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
-      {/* ✅ Countdown overlay */}
-      {loading && <Loader />}
+    <div
+      className={`flex justify-center items-center min-h-screen px-4 transition-colors 
+      ${loading ? "overflow-hidden" : ""}
+      ${"bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100"}`}
+    >
+      {loading ? (
+        <Loader />
+      ) : (
+        <div
+          className={`w-full max-w-md p-8 rounded-2xl shadow-lg transition 
+          border border-gray-200 dark:border-gray-700
+          bg-white dark:bg-gray-800`}
+        >
+          <h2 className="text-3xl font-bold text-center mb-4 text-sky-600 dark:text-teal-400">
+            Welcome Back
+          </h2>
+          <p className="text-center text-gray-500 dark:text-gray-400 mb-6">
+            Login to your account
+          </p>
 
-      <div className="feature-card" style={{ width: "100%", maxWidth: "420px" }}>
-        <h2 className="text-center mb-4">Login</h2>
+          {error && (
+            <div className="mb-4 text-center text-red-500 font-medium">
+              {error}
+            </div>
+          )}
 
-        {error && <p className="text-danger text-center">{error}</p>}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email */}
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300"
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="you@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-xl bg-gray-50 dark:bg-gray-900
+                border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100
+                focus:ring-2 focus:ring-sky-500 dark:focus:ring-teal-500 outline-none transition"
+              />
+            </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              className="form-control"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
+            {/* Password */}
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300"
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-xl bg-gray-50 dark:bg-gray-900
+                border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100
+                focus:ring-2 focus:ring-sky-500 dark:focus:ring-teal-500 outline-none transition"
+              />
+            </div>
 
-          <div className="mb-3">
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full py-2.5 mt-2 rounded-xl text-white font-semibold
+              bg-gradient-to-r from-sky-600 to-blue-700 
+              hover:from-sky-500 hover:to-blue-600
+              dark:from-teal-600 dark:to-emerald-700
+              hover:shadow-md active:scale-95 transition-transform duration-200"
+            >
+              Login
+            </button>
+          </form>
 
-          <button type="submit" className="btn btn-primary w-100">
-            Login
-          </button>
-        </form>
-
-        <p className="text-center mt-3">
-          Don’t have an account?{" "}
-          <Link to="/signup" style={{ color: "var(--bs-primary)" }}>
-            Sign Up
-          </Link>
-        </p>
-      </div>
+          {/* Sign Up Redirect */}
+          <p className="text-center mt-6 text-sm text-gray-600 dark:text-gray-400">
+            Don't have an account?{" "}
+            <Link
+              to="/signup"
+              className="text-sky-600 dark:text-teal-400 hover:underline font-medium no-underline"
+            >
+              Sign Up
+            </Link>
+          </p>
+        </div>
+      )}
     </div>
   );
 };

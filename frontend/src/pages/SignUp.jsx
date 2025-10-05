@@ -14,8 +14,6 @@ const Signup = () => {
     bio: "",
   });
 
-
-  
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -59,10 +57,7 @@ const Signup = () => {
     }
 
     try {
-      // Exclude repassword before sending
       const { repassword, ...payload } = formData;
-
-      // Ensure all required fields exist
       const body = {
         email: payload.email,
         username: payload.username,
@@ -80,20 +75,19 @@ const Signup = () => {
       const result = await res.json();
       console.log("Response from backend:", result);
 
-     if (res.ok) {
-  localStorage.setItem("user", JSON.stringify(result.user));
-  alert("Signup successful!");
-  setFormData({
-    email: "",
-    username: "",
-    phone: "",
-    password: "",
-    repassword: "",
-    bio: "",
-  });
-  navigate("/");
-}
- else {
+      if (res.ok) {
+        localStorage.setItem("user", JSON.stringify(result.user));
+        alert("Signup successful!");
+        setFormData({
+          email: "",
+          username: "",
+          phone: "",
+          password: "",
+          repassword: "",
+          bio: "",
+        });
+        navigate("/");
+      } else {
         setError(result.error || "Something went wrong!");
       }
     } catch (err) {
@@ -104,94 +98,179 @@ const Signup = () => {
 
   return (
     <div
-      className="d-flex justify-content-center align-items-center"
-      style={{ minHeight: "118vh" }}
+      className={`flex justify-center items-center min-h-screen px-4 transition-colors 
+      bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 py-10`}
     >
-      <div className="auth-card" style={{ width: "100%", maxWidth: "420px" }}>
-        <h2 className="text-center mb-4">Create Account</h2>
+      <div
+        className={`w-full max-w-md p-8 rounded-2xl shadow-lg transition 
+        border border-gray-200 dark:border-gray-700
+        bg-white dark:bg-gray-800`}
+      >
+        <h2 className="text-3xl font-bold text-center mb-4 text-sky-600 dark:text-teal-400">
+          Create Account
+        </h2>
+        <p className="text-center text-gray-500 dark:text-gray-400 mb-6">
+          Join us to manage your finances smartly!
+        </p>
 
-        {error && <p className="text-danger text-center">{error}</p>}
+        {error && (
+          <div className="mb-4 text-center text-red-500 font-medium">
+            {error}
+          </div>
+        )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label>Email</label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Email */}
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300"
+            >
+              Email
+            </label>
             <input
               type="email"
               name="email"
-              className="form-control"
+              id="email"
+              placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
               required
+              className="w-full px-4 py-2 border rounded-xl bg-gray-50 dark:bg-gray-900
+              border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100
+              focus:ring-2 focus:ring-sky-500 dark:focus:ring-teal-500 outline-none transition"
             />
           </div>
 
-          <div className="mb-3">
-            <label>Username</label>
+          {/* Username */}
+          <div>
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300"
+            >
+              Username
+            </label>
             <input
               type="text"
               name="username"
-              className="form-control"
+              id="username"
+              placeholder="Your username"
               value={formData.username}
               onChange={handleChange}
               required
+              className="w-full px-4 py-2 border rounded-xl bg-gray-50 dark:bg-gray-900
+              border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100
+              focus:ring-2 focus:ring-sky-500 dark:focus:ring-teal-500 outline-none transition"
             />
           </div>
 
-          <div className="mb-3">
-            <label>Phone</label>
+          {/* Phone */}
+          <div>
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300"
+            >
+              Phone
+            </label>
             <input
               type="tel"
               name="phone"
-              className="form-control"
+              id="phone"
+              placeholder="10-digit number"
               value={formData.phone}
               onChange={handleChange}
               required
+              className="w-full px-4 py-2 border rounded-xl bg-gray-50 dark:bg-gray-900
+              border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100
+              focus:ring-2 focus:ring-sky-500 dark:focus:ring-teal-500 outline-none transition"
             />
           </div>
 
-          <div className="mb-3">
-            <label>Password</label>
+          {/* Password */}
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300"
+            >
+              Password
+            </label>
             <input
               type="password"
               name="password"
-              className="form-control"
+              id="password"
+              placeholder="Enter password"
               value={formData.password}
               onChange={handleChange}
               required
+              className="w-full px-4 py-2 border rounded-xl bg-gray-50 dark:bg-gray-900
+              border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100
+              focus:ring-2 focus:ring-sky-500 dark:focus:ring-teal-500 outline-none transition"
             />
           </div>
 
-          <div className="mb-3">
-            <label>Confirm Password</label>
+          {/* Confirm Password */}
+          <div>
+            <label
+              htmlFor="repassword"
+              className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300"
+            >
+              Confirm Password
+            </label>
             <input
               type="password"
               name="repassword"
-              className="form-control"
+              id="repassword"
+              placeholder="Re-enter password"
               value={formData.repassword}
               onChange={handleChange}
               required
+              className="w-full px-4 py-2 border rounded-xl bg-gray-50 dark:bg-gray-900
+              border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100
+              focus:ring-2 focus:ring-sky-500 dark:focus:ring-teal-500 outline-none transition"
             />
           </div>
 
-          <div className="mb-3">
-            <label>Bio</label>
+          {/* Bio */}
+          <div>
+            <label
+              htmlFor="bio"
+              className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300"
+            >
+              Bio
+            </label>
             <textarea
               name="bio"
-              className="form-control"
+              id="bio"
+              rows="3"
+              placeholder="Tell us about yourself..."
               value={formData.bio}
               onChange={handleChange}
-              rows="3"
+              className="w-full px-4 py-2 border rounded-xl bg-gray-50 dark:bg-gray-900
+              border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100
+              focus:ring-2 focus:ring-sky-500 dark:focus:ring-teal-500 outline-none transition resize-none"
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100">
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full py-2.5 mt-2 rounded-xl text-white font-semibold
+            bg-gradient-to-r from-sky-600 to-blue-700 
+            hover:from-sky-500 hover:to-blue-600
+            dark:from-teal-600 dark:to-emerald-700
+            hover:shadow-md active:scale-95 transition-transform duration-200"
+          >
             Sign Up
           </button>
         </form>
 
-        <p className="text-center mt-3">
+        {/* Login Redirect */}
+        <p className="text-center mt-6 text-sm text-gray-600 dark:text-gray-400">
           Already have an account?{" "}
-          <Link to="/login" style={{ color: "var(--bs-primary)" }}>
+          <Link
+            to="/login"
+            className="text-sky-600 dark:text-teal-400 hover:underline font-medium no-underline"
+          >
             Login
           </Link>
         </p>
