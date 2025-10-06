@@ -26,6 +26,7 @@ const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [viewMode, setViewMode] = useState("list");
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -334,24 +335,26 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {/* Header Section with Month and Actions */}
-      <div className="flex flex-col md:flex-row justify-between items-center align-items-center place-items-center gap-4 mb-6 p-4 
-  bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm transition">
 
-        {/* Month-Year Display */}
+      <div
+        className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 p-4 
+        bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
+        rounded-2xl shadow-sm transition-all duration-300"
+      >
+        {/* ✅ Month-Year Display */}
         <h3 className="text-2xl font-semibold text-sky-600 dark:text-teal-400 text-center md:text-left">
           {months[month - 1]} - {year}
         </h3>
 
-        {/* Action Buttons */}
-        <div className="flex flex-row gap-3 ">
+        {/* ✅ Action Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-3">
           {/* Predict Button */}
           <button
             className="flex items-center gap-2 px-4 py-2 rounded-xl 
-      bg-gradient-to-r from-violet-600 to-purple-700 
-      text-white font-medium shadow-md hover:shadow-lg 
-      hover:from-violet-500 hover:to-purple-600 
-      active:scale-95 transition transform duration-200 ease-in-out"
+            bg-gradient-to-r from-violet-600 to-purple-700 
+            text-white font-medium shadow-md hover:shadow-lg 
+            hover:from-violet-500 hover:to-purple-600 
+            active:scale-95 transition transform duration-200 ease-in-out"
           >
             <i className="bi bi-stars text-rose-300"></i>
             Predict
@@ -360,21 +363,51 @@ const Dashboard = () => {
           {/* Recommend Button */}
           <button
             className="flex items-center gap-2 px-4 py-2 rounded-xl 
-      bg-gradient-to-r from-rose-600 to-pink-700 
-      text-white font-medium shadow-md hover:shadow-lg 
-      hover:from-rose-500 hover:to-pink-600 
-      active:scale-95 transition transform duration-200 ease-in-out"
+            bg-gradient-to-r from-rose-600 to-pink-700 
+            text-white font-medium shadow-md hover:shadow-lg 
+            hover:from-rose-500 hover:to-pink-600 
+            active:scale-95 transition transform duration-200 ease-in-out"
           >
-            <i className="bi bi-lightbulb text-purple-300"></i>
+            <i className="bi bi-lightbulb text-yellow-300"></i>
             Recommend
           </button>
+
+          {/* ✅ View Toggle Buttons */}
+          <div
+            className="hidden md:flex items-center gap-2 ml-2 px-2 py-1 rounded-xl 
+            bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600
+            shadow-inner transition-all duration-200"
+          >
+            {/* List View */}
+            <button
+              onClick={() => setViewMode("list")}
+              className={`p-1 rounded-lg transition-all duration-200 ${viewMode === "list"
+                ? "bg-sky-500 text-white shadow-md"
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                }`}
+              title="List View"
+            >
+              <i className="bi bi-list text-lg"></i>
+            </button>
+
+            {/* Grid View */}
+            <button
+              onClick={() => setViewMode("grid")}
+              className={`p-1 rounded-lg transition-all duration-200 ${viewMode === "grid"
+                ? "bg-sky-500 text-white shadow-md"
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                }`}
+              title="Grid View"
+            >
+              <i className="bi bi-grid text-lg"></i>
+            </button>
+          </div>
         </div>
       </div>
 
 
-
       {/* Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
+      <div className={`grid gap-6 p-4 ${viewMode === "list" ? "grid-cols-1" : "md:grid-cols-2 grid-cols-1"}`}>
         {/* Expense by Category Bar */}
         <div className={`p-4 border rounded-lg shadow transition 
     ${isDarkMode ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`}>
@@ -426,12 +459,28 @@ const Dashboard = () => {
               </Pie>
               <Tooltip
                 contentStyle={{
-                  backgroundColor: isDarkMode ? "var(--color-gray-700)" : "#f9fafb", // dark:bg-gray-800, light:bg-gray-50
-                  color: isDarkMode ? "#e5e7eb" : "#374151", // dark:text-gray-200, light:text-gray-700
-                  borderRadius: "0.5rem",
-                  border: "none"
+                  backgroundColor: isDarkMode ? "#1f2937" : "#f9fafb", // dark:bg-gray-800, light:bg-gray-50
+                  color: isDarkMode ? "#f9fafb" : "#111827",           // dark:text-gray-100, light:text-gray-900
+                  borderRadius: "0.75rem",
+                  border: isDarkMode ? "1px solid #374151" : "1px solid #e5e7eb",
+                  boxShadow: isDarkMode
+                    ? "0 2px 10px rgba(0,0,0,0.4)"
+                    : "0 2px 8px rgba(0,0,0,0.1)",
+                  padding: "0.5rem 0.75rem",
                 }}
+                labelStyle={{
+                  color: isDarkMode ? "#93c5fd" : "#2563eb", // blue shades for label
+                  fontWeight: 600,
+                  marginBottom: "4px",
+                }}
+                itemStyle={{
+                  color: isDarkMode ? "#f3f4f6" : "#1f2937", // consistent with theme
+                  fontSize: "0.875rem",
+                  fontWeight: 500,
+                }}
+                cursor={{ fill: "rgba(156, 163, 175, 0.15)" }} // subtle hover background
               />
+
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -463,7 +512,7 @@ const Dashboard = () => {
               <Line
                 type="monotone"
                 dataKey="amount"
-                stroke={isDarkMode ? "#34d399" : "#059669"} // green-400 / green-600
+                stroke={isDarkMode ? "#f87171" : "#dc2626"} // red-400 / red-600
                 strokeWidth={2}
               />
             </LineChart>
@@ -497,7 +546,7 @@ const Dashboard = () => {
               <Line
                 type="monotone"
                 dataKey="salary"
-                stroke={isDarkMode ? "#f87171" : "#dc2626"} // red-400 / red-600
+                stroke={isDarkMode ? "#34d399" : "#059669"} // green-400 / green-600
                 strokeWidth={2}
               />
             </LineChart>
