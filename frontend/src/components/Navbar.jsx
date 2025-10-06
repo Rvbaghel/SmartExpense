@@ -48,7 +48,9 @@ const Navbar = () => {
           className="text-xl font-bold no-underline flex flex-row gap-2 items-center gap-1"
         >
           <img src="logo.png" className="size-12" />
-          <span className="text-sky-500 dark:text-teal-400">Smart</span>Expense
+          <span className="text-teal-400 dark:text-sky-500">
+            <span className="text-sky-500 dark:text-teal-400">Smart</span>Expense
+          </span>
         </Link>
 
         {/* Mobile toggle */}

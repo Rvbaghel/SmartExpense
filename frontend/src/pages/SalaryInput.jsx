@@ -15,6 +15,7 @@ const SalaryInput = () => {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const salaryTimeout = useRef(null);
   const yearTimeout = useRef(null);
   const abortController = useRef(null);
 
@@ -74,20 +75,23 @@ const SalaryInput = () => {
 
   // Optimized range fill: fills only in-between empty months
   const applyRangeFillOptimized = (arr) => {
+
+    console.log("Smart Filler Invoked")
+
     const filled = [...arr];
+
     let lastValue = null;
 
     for (let i = 0; i < 12; i++) {
-      if (filled[i] !== "") lastValue = filled[i];
-      else if (lastValue !== null) filled[i] = lastValue;
+      if (filled[i] === "") {
+        filled[i] = lastValue;
+      }
+      lastValue = filled[i];
     }
 
-    // Optional: backward fill from last known
-    let firstValue = null;
-    for (let i = 11; i >= 0; i--) {
-      if (filled[i] !== "") firstValue = filled[i];
-      else if (firstValue !== null) filled[i] = firstValue;
-    }
+
+
+    console.log("Smart Filler Done", filled)
 
     return filled;
   };
@@ -95,8 +99,12 @@ const SalaryInput = () => {
   const handleMonthlyChange = (idx, value) => {
     const updated = [...monthlySalaries];
     updated[idx] = value || "";
+    console.log("Start", updated);
+
     setMonthlySalaries(applyRangeFillOptimized(updated));
-  };
+
+    return updated;
+  }
 
   const handleYearChange = (e) => {
     setYear(e.target.value);
@@ -115,10 +123,10 @@ const SalaryInput = () => {
 
     try {
       setLoading(true);
-      const promises = monthlySalaries.map((amt, idx) => {
+      const promises = monthlySalaries.map(async (amt, idx) => {
         if (!amt) return null;
         const month = (idx + 1).toString().padStart(2, "0");
-        return fetch(`${API_URL}/salary/add`, {
+        const response = await fetch(`${API_URL}/salary/add`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -127,10 +135,13 @@ const SalaryInput = () => {
             salary_date: `${year}-${month}-01`,
           }),
         });
+        const res = await response.json()
+        console.log(idx, res);
+        return res;
       });
 
       const results = await Promise.all(promises.filter(Boolean));
-      await Promise.all(results.map(r => r.json()));
+      await Promise.all(results.map(r => r));
       setSuccess("Salary saved successfully!");
     } catch (err) {
       console.error(err);

@@ -24,9 +24,9 @@ const BackToTop = () => {
   }
 
   return (
-    <button 
-      className={`back-to-top ${isVisible ? 'd-flex' : 'd-none'}`}
-      onClick={scrollToTop} 
+    <button
+      className={`back-to-top bg-sky-500 hover:bg-teal-500 ${isVisible ? 'd-flex' : 'd-none'}`}
+      onClick={scrollToTop}
       aria-label="Back to top"
       style={{ display: isVisible ? 'flex' : 'none' }}
     >
