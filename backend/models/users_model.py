@@ -38,6 +38,15 @@ def insert_user(email, username, phone, password, bio):
     except Exception as e:
         print("Insert user error:", e)
         return None
+    
+def find_all_users():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users")
+    user = cursor.fetchall()
+    print(user)
+    conn.close()
+    return user
 
 def find_user_by_email(email):
     conn = get_connection()
