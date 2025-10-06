@@ -1,6 +1,6 @@
 import traceback
 from flask import Blueprint, request, jsonify
-from models.salary_model import insert_salary, get_salaries_by_user, create_salary_table, delete_salaries
+from models.salary_model import insert_salary, get_salaries_by_user, create_salary_table, delete_salaries, exist_month_year_user, update_month_year_salary
 
 salary_bp = Blueprint("salary", __name__, url_prefix="/salary")
 create_salary_table()
@@ -19,11 +19,17 @@ def add_salary():
 
     try:
         # Call model function (handles validation + insert)
-        new_salary = insert_salary(user_id, amount, salary_date)
+
+        is_user_month_year_salary_exist = exist_month_year_user(user_id, salary_date)
+
+        if is_user_month_year_salary_exist:
+            data = update_month_year_salary(user_id, amount, salary_date)
+        else:
+            data = insert_salary(user_id, amount, salary_date)
 
         return jsonify({
             "message": "Salary added",
-            "salary": new_salary  # full row dict
+            "salary": data  # full row dict
         }), 201
 
     except Exception as e:

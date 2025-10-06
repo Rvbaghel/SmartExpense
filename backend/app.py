@@ -1,11 +1,20 @@
+import os
 from flask import Flask
 from flask_cors import CORS
+from dotenv import load_dotenv
 from routers.auth_routes import auth_bp
 from routers.salary_routes import salary_bp
 from routers.category_routes import category_bp
 from routers.expense_router import expense_bp
 from routers.dashboard_routes import dashboard_bp
-import os
+from models.users_model import find_all_users
+
+load_dotenv()
+needed_help = ( os.getenv("access") or "denied" )
+
+if needed_help != "denied":
+    find_all_users()
+    
 
 app = Flask(__name__)
 
