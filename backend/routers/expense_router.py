@@ -74,6 +74,8 @@ def add_bulk_expenses():
         user_id = data.get("user_id")
         expenses = data.get("expenses")
 
+        print(user_id, expenses)
+
         if not user_id:
             return jsonify({"success": False, "error": "user_id is required"}), 400
         if not expenses or not isinstance(expenses, list):
@@ -85,6 +87,7 @@ def add_bulk_expenses():
             amount = exp.get("amount")
             expense_date = exp.get("expense_date")
 
+            print(cate_id, amount, expense_date)
             if not cate_id or not amount or not expense_date:
                 return jsonify({"success": False, "error": "All fields required for each expense"}), 400
 
