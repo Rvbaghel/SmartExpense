@@ -21,6 +21,7 @@ def create_expense_table():
         CREATE TABLE IF NOT EXISTS expense (
             id SERIAL PRIMARY KEY,
             cate_id INT NOT NULL REFERENCES category(id) ON DELETE CASCADE,
+            user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
             amount NUMERIC(12,2) NOT NULL,
             expense_date DATE NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -30,7 +31,7 @@ def create_expense_table():
     conn.close()
 
 
-def insert_expense(cate_id, amount, expense_date):
+def insert_expense(cate_id, user_id, amount, expense_date):
     """
     Insert an expense and return the inserted row as dict.
     """
@@ -43,7 +44,7 @@ def insert_expense(cate_id, amount, expense_date):
     # ✅ Ensure date is correct format
     if isinstance(expense_date, str):
         try:
-            expense_date = datetime.datetime.strptime(expense_date, "%Y-%m-%d").date()
+            expense_date = datetime.datetime.strptime(expense_date, "%d-%m-%Y").date()
         except ValueError:
             raise ValueError("expense_date must be in YYYY-MM-DD format")
 
@@ -52,35 +53,37 @@ def insert_expense(cate_id, amount, expense_date):
     try:
         cursor.execute(
             """
-            INSERT INTO expense (cate_id, amount, expense_date)
-            VALUES (%s, %s, %s)
-            RETURNING id, cate_id, amount, expense_date, created_at;
+            INSERT INTO expense (cate_id, user_id, amount, expense_date)
+            VALUES (%s, %s, %s, %s)
+            RETURNING id, cate_id, user_id, amount, expense_date, created_at;
             """,
-            (cate_id, amount, expense_date)
+            (cate_id, user_id, amount, expense_date)
         )
         result = cursor.fetchone()
         conn.commit()
         return result
     except psycopg2.Error as e:
         conn.rollback()
+        print(f"Database error while inserting expense: {str(e)}")
         raise Exception(f"Database error while inserting expense: {str(e)}")
     finally:
         conn.close()
 
 
-def get_all_expenses():
+def get_all_expenses(user_id):
     """
     Fetch all expenses (joined with category name).
     """
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute("""
-        SELECT e.id, e.amount, e.expense_date, e.created_at, 
+        SELECT e.id, e.user_id, e.amount, e.expense_date, e.created_at, 
                c.name AS category_name, c.id AS cate_id
         FROM expense e
-        JOIN category c ON e.cate_id = c.id
+        JOIN category c ON e.cate_id = c.id 
+        AND e.user_id = %s
         ORDER BY e.expense_date DESC;
-    """)
+    """, (user_id,))
     expenses = cursor.fetchall()
     conn.close()
     return expenses
