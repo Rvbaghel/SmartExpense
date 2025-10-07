@@ -15,14 +15,16 @@ const Review = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const savedUser = JSON.parse(localStorage.getItem("user"));
-    if (!savedUser) {
-      navigate("/login");
-      return;
-    }
-    setUser(savedUser);
 
     const fetchData = async () => {
+
+      const savedUser = JSON.parse(localStorage.getItem("user"));
+      if (!savedUser) {
+        navigate("/login");
+        return;
+      }
+      setUser(savedUser);
+      console.log("User", user)
       setLoading(true);
       try {
         // Latest salary
@@ -37,11 +39,20 @@ const Review = () => {
         setSalary(salaryData.salary);
 
         // Expenses
-        const expenseRes = await fetch(`${API_URL}/expense/all`);
+        const expenseRes = await fetch(`${API_URL}/expense/all`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            user_id: savedUser.id
+          })
+        });
         const expenseData = await expenseRes.json();
 
         if (!expenseRes.ok || !expenseData.success) {
-          setError("Failed to load expenses");
+          setError("Failed to load expenses", expenseData);
+          console.log("Failed to load expenses", expenseData);
           setLoading(false);
           return;
         }
@@ -58,6 +69,8 @@ const Review = () => {
         setExpenses(filtered);
       } catch (err) {
         setError("Failed to load review data.");
+        console.log("Failed to load review data.");
+        console.log(err);
       } finally {
         setLoading(false);
       }

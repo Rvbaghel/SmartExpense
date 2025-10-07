@@ -32,7 +32,7 @@ def get_summary(user_id):
 
         # Fetch from DB
         salaries = get_salaries_by_user(user_id)
-        expenses = get_all_expenses()
+        expenses = get_all_expenses(user_id)
 
         # --- Salaries ---
         sal_df = pd.DataFrame(salaries)
@@ -99,7 +99,7 @@ def get_charts(user_id):
         print("Month is", month)
 
         salaries = get_salaries_by_user(user_id)
-        expenses = get_all_expenses()
+        expenses = get_all_expenses(user_id)
 
         # Filter only expenses of this user
         user_expenses = [e for e in expenses if e["cate_id"]]
@@ -124,8 +124,8 @@ def get_charts(user_id):
 
         # charts["salary_trend"] = plot_to_base64()
         charts["salary_trend"] = {
-            'x': salary_dates,
-            'y': salary_amounts
+            'x': salary_dates[::-1],
+            'y': salary_amounts[::-1]
         }
 
         # ----- 2. Expense Trend (Line Chart) -----
@@ -140,8 +140,8 @@ def get_charts(user_id):
         plt.legend()
         # charts["expense_trend"] = plot_to_base64()
         charts["expense_trend"] = {
-            'x': expense_dates,
-            'y': expense_amounts
+            'x': expense_dates[::-1],
+            'y': expense_amounts[::-1]
         }
 
         # ----- 3. Expenses by Category (Pie Chart) -----

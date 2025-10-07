@@ -3,6 +3,7 @@ import * as XLSX from "xlsx";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import dayjs from "dayjs";
 import { API_URL } from "../config";
 
 const Expenses = () => {
@@ -11,6 +12,7 @@ const Expenses = () => {
   const [user, setUser] = useState(null);
   const [salary, setSalary] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [strictDisable, setStrictDisable] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [expenseData, setExpenseData] = useState([]);
@@ -35,11 +37,8 @@ const Expenses = () => {
 
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem("user"));
-    const savedSalary = JSON.parse(localStorage.getItem("currentSalary"));
     if (!savedUser) navigate("/login", { replace: true });
     else setUser(savedUser);
-    if (!savedSalary || !savedSalary.salary_id) navigate("/salary-input", { replace: true });
-    else setSalary(savedSalary);
   }, [navigate]);
 
   useEffect(() => {
@@ -52,6 +51,7 @@ const Expenses = () => {
           return;
         }
         setCategories(data.categories.map((c) => c.name.toLowerCase()));
+        setStrictDisable(false);
       } catch (err) {
         setError("Failed to fetch categories from server");
       }
@@ -60,6 +60,43 @@ const Expenses = () => {
   }, []);
 
   const excelDateToJSDate = (serial) => {
+    const excelEpoch = new Date(1900, 0, 1);
+    const days = Math.floor(serial) - 2; // Excel's leap year bug
+    return new Date(excelEpoch.getTime() + days * 24 * 60 * 60 * 1000);
+  };
+
+  const normalizeDate = (dateValue) => {
+    if (!dateValue) return null;
+
+    // 🧩 Case 1: Excel serial date (number)
+    if (typeof dateValue === "number") {
+      const jsDate = excelDateToJSDate(dateValue);
+      return dayjs(jsDate).format("MM-DD-YYYY");
+    }
+
+    // 🧩 Case 2: Already a Date object
+    if (dateValue instanceof Date) {
+      return dayjs(dateValue).format("MM-DD-YYYY");
+    }
+
+    // 🧩 Case 3: String — try parsing in common formats
+    const parsed = dayjs(dateValue, ["DD-MM-YYYY", "MM/DD/YYYY", "YYYY-MM-DD"], true);
+    if (parsed.isValid()) {
+      return parsed.format("DD-MM-YYYY");
+    }
+
+    // 🧩 Case 4: Fallback — attempt native parsing
+    const parsedDate = new Date(dateValue);
+    if (!isNaN(parsedDate)) {
+      return dayjs(parsedDate).format("DD-MM-YYYY");
+    }
+
+    // 🧩 Case 5: Invalid input — just return raw
+    return dateValue;
+  };
+
+
+  /* const excelDateToJSDate = (serial) => {
     const utc_days = Math.floor(serial - 25569);
     const utc_value = utc_days * 86400;
     const date_info = new Date(utc_value * 1000);
@@ -73,7 +110,7 @@ const Expenses = () => {
     date_info.setMinutes(minutes);
     date_info.setSeconds(seconds);
     return date_info.toISOString().split("T")[0];
-  };
+  }; */
 
   const handleFileUpload = (e) => {
     setError("");
@@ -106,6 +143,7 @@ const Expenses = () => {
         const workbook = XLSX.read(data, { type: "array" });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const json = XLSX.utils.sheet_to_json(sheet);
+        console.log(json)
 
         if (!json.length) throw new Error("Uploaded file is empty.");
 
@@ -116,34 +154,39 @@ const Expenses = () => {
               .map((k) => k.toLowerCase())
               .includes(col)
         );
+        console.log(missingCols)
         if (missingCols.length > 0)
           throw new Error(`Missing required columns: ${missingCols.join(", ")}`);
 
+        console.log("All fields found")
         const cleanedData = [];
 
         for (let row of json) {
           const cat = (row.category || "").trim().toLowerCase();
-          if (!categories.includes(cat))
-            throw new Error(`Invalid category found: ${row.category}`);
+          if (!categories.includes(cat) && cat !== "food & groceries")
+            console.log(`Invalid category found: ${row.category}`);
 
-          let rowDate = row.date;
-          if (typeof rowDate === "number") rowDate = excelDateToJSDate(rowDate);
-
-          if (isNaN(Date.parse(rowDate)))
-            throw new Error(`Invalid date format in row: ${JSON.stringify(row)}`);
+          let rowDate = normalizeDate(row.date);
+          if (!rowDate) {
+            console.log(`Invalid date format in row: ${JSON.stringify(row)}`);
+            return null;
+          }
 
           const amt = Number(row.amount);
           if (isNaN(amt) || amt <= 0)
             throw new Error(`Invalid amount in row: ${JSON.stringify(row)}`);
+          console.log(amt)
+
 
           cleanedData.push({
-            cate_id: categories.indexOf(cat) + 1,
+            cate_id: categories.indexOf(cat.toLowerCase()) + 1,
             category: cat,
             amount: amt,
             expense_date: rowDate,
           });
         }
 
+        console.log(categories, "Cleaned", cleanedData)
         setExpenseData(cleanedData);
         setSuccess("File validated and cleaned successfully! Ready to submit.");
       } catch (err) {
@@ -197,6 +240,9 @@ const Expenses = () => {
     setLoading(true);
 
     try {
+
+      console.log("Sending this data", expenseData)
+
       const res = await fetch(`${API_URL}/expense/add_bulk`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -313,7 +359,7 @@ const Expenses = () => {
           </button>
           <button
             onClick={handleSubmit}
-            disabled={!expenseData.length}
+            disabled={strictDisable || expenseData.length === 0}
             className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50"
           >
             Submit & Continue

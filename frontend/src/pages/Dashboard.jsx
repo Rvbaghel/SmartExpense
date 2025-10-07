@@ -625,9 +625,92 @@ const Dashboard = () => {
             </BarChart>
           </ResponsiveContainer>
         </div>
-
       </div>
-    </div>
+
+      <div className="w-full mt-6">
+        <div
+          className={`rounded-2xl border shadow-sm transition-colors duration-300 
+        ${isDarkMode
+              ? "bg-gray-800 border-gray-700 text-gray-200"
+              : "bg-white border-gray-200 text-gray-800"
+            }`}
+        >
+          <div className="p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            {/* Left Section */}
+            <div className="flex flex-col">
+              <h6
+                className={`flex items-center gap-2 text-base font-semibold ${isDarkMode ? "text-amber-400" : "text-amber-500"
+                  }`}
+              >
+                <i className="bi bi-lightning"></i>
+                Quick Actions
+              </h6>
+              <small
+                className={`${isDarkMode ? "text-gray-400" : "text-gray-500"
+                  } mt-0.5`}
+              >
+                Manage your financial data efficiently
+              </small>
+            </div>
+
+            {/* Right Section */}
+            <div className="flex flex-wrap gap-2 justify-start md:justify-end">
+              <button
+                onClick={() => navigate("/salary-input")}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium border 
+                transition-all duration-200 hover:scale-105
+                ${isDarkMode
+                    ? "border-blue-500 text-blue-400 hover:bg-blue-600 hover:text-white"
+                    : "border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
+                  }`}
+              >
+                <i className="bi bi-plus-circle me-1"></i>
+                Add Salary
+              </button>
+
+              <button
+                onClick={() => navigate("/expenses")}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium border 
+                transition-all duration-200 hover:scale-105
+                ${isDarkMode
+                    ? "border-gray-400 text-gray-300 hover:bg-gray-600 hover:text-white"
+                    : "border-gray-500 text-gray-700 hover:bg-gray-600 hover:text-white"
+                  }`}
+              >
+                <i className="bi bi-receipt me-1"></i>
+                Add Expenses
+              </button>
+
+              <button
+                onClick={() => navigate("/review")}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium border 
+                transition-all duration-200 hover:scale-105
+                ${isDarkMode
+                    ? "border-green-500 text-green-400 hover:bg-green-600 hover:text-white"
+                    : "border-green-600 text-green-600 hover:bg-green-600 hover:text-white"
+                  }`}
+              >
+                <i className="bi bi-clipboard-check me-1"></i>
+                Review Data
+              </button>
+
+              <button
+                onClick={() => window.location.reload()}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium border 
+                transition-all duration-200 hover:scale-105
+                ${isDarkMode
+                    ? "border-cyan-500 text-cyan-400 hover:bg-cyan-600 hover:text-white"
+                    : "border-cyan-600 text-cyan-600 hover:bg-cyan-600 hover:text-white"
+                  }`}
+              >
+                <i className="bi bi-arrow-clockwise me-1"></i>
+                Refresh
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div >
   );
 };
 

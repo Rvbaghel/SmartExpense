@@ -6,13 +6,19 @@ from models.expense_model import insert_expense, get_all_expenses, delete_expens
 expense_bp = Blueprint("expense", __name__, url_prefix="/expense")
 
 
-@expense_bp.route("/all", methods=["GET"])
+@expense_bp.route("/all", methods=["POST"])
 def all_expenses():
     """
     Fetch all expenses
     """
     try:
-        expenses = get_all_expenses()
+        data = request.get_json()
+
+        user_id = data.get("user_id") 
+        if not user_id:
+            return jsonify({"success": False, "message": "Please send the user id"}), 401
+            
+        expenses = get_all_expenses(user_id)
         return jsonify({"success": True, "expenses": expenses}), 200
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
@@ -29,14 +35,20 @@ def delete_expenses():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
-@expense_bp.route("/monthly", methods=["GET"])
+@expense_bp.route("/monthly", methods=["POST"])
 def monthly_expenses():
     """
     Fetch all expenses
     """
     try:
-        expenses = get_all_expenses()
 
+        data = request.get_json()
+
+        user_id = data.get("user_id")
+        if not user_id:
+            return jsonify({"success": False, "message": "Please send the user id"}), 401
+        
+        expenses = get_all_expenses(user_id)
         df = pd.DataFrame({
             'date': pd.to_datetime([exp['expense_date'] for exp in expenses]),
             'amount': [float(exp['amount']) for exp in expenses]
@@ -74,6 +86,8 @@ def add_bulk_expenses():
         user_id = data.get("user_id")
         expenses = data.get("expenses")
 
+        print(user_id, expenses)
+
         if not user_id:
             return jsonify({"success": False, "error": "user_id is required"}), 400
         if not expenses or not isinstance(expenses, list):
@@ -85,15 +99,19 @@ def add_bulk_expenses():
             amount = exp.get("amount")
             expense_date = exp.get("expense_date")
 
-            if not cate_id or not amount or not expense_date:
+            print(cate_id, amount, expense_date)
+            if not cate_id or not user_id or not amount or not expense_date:
+                print({"success": False, "error": "All fields required for each expense"})
                 return jsonify({"success": False, "error": "All fields required for each expense"}), 400
 
-            inserted_row = insert_expense(cate_id, amount, expense_date)
+            expense_date = str(expense_date)
+            inserted_row = insert_expense(cate_id, user_id, amount, expense_date)
             inserted.append(inserted_row)
 
         return jsonify({"success": True, "inserted": inserted}), 201
 
     except Exception as e:
+        print({"success": False, "error": str(e)})
         return jsonify({"success": False, "error": str(e)}), 500
 
 
