@@ -32,7 +32,7 @@ def get_summary(user_id):
 
         # Fetch from DB
         salaries = get_salaries_by_user(user_id)
-        expenses = get_all_expenses()
+        expenses = get_all_expenses(user_id)
 
         # --- Salaries ---
         sal_df = pd.DataFrame(salaries)
@@ -99,7 +99,7 @@ def get_charts(user_id):
         print("Month is", month)
 
         salaries = get_salaries_by_user(user_id)
-        expenses = get_all_expenses()
+        expenses = get_all_expenses(user_id)
 
         # Filter only expenses of this user
         user_expenses = [e for e in expenses if e["cate_id"]]
