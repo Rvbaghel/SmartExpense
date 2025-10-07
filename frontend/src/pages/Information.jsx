@@ -31,12 +31,28 @@ const Information = () => {
         const fetchData = async () => {
             try {
                 // Fetch expenses
-                const expRes = await fetch(`${API_URL}/expense/all`);
+                const expRes = await fetch(`${API_URL}/expense/all`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        user_id: user.id
+                    })
+                });
                 const expData = await expRes.json();
                 if (expData.success) setExpenses(expData.expenses);
                 console.log(expData)
 
-                const monRes = await fetch(`${API_URL}/expense/monthly`);
+                const monRes = await fetch(`${API_URL}/expense/monthly`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        user_id: user.id
+                    })
+                });
                 const monData = await monRes.json();
 
                 if (monData.success) {
