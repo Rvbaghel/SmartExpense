@@ -101,7 +101,7 @@ const Profile = () => {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
-          <StatCard icon="bi-wallet2" title="Salary Entries" subtitle="Track your income" isDarkMode={isDarkMode} />
+          <StatCard icon="bi-wallet2" title="earning Entries" subtitle="Track your income" isDarkMode={isDarkMode} />
           <StatCard icon="bi-receipt" title="Expense Records" subtitle="Manage spending" isDarkMode={isDarkMode} />
           <StatCard icon="bi-graph-up" title="Analytics" subtitle="View insights" isDarkMode={isDarkMode} />
         </div>

@@ -22,7 +22,7 @@ const Navbar = () => {
   const commonLinks = [
     { path: "/", label: "Home" },
     { path: "/about", label: "About" },
-    { path: "/salary-input", label: "Salary" },
+    { path: "/earning", label: "Earning" },
     { path: "/expenses", label: "Expenses" },
     { path: "/dashboard", label: "Dashboard" },
   ]

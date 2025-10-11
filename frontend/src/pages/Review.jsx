@@ -9,7 +9,7 @@ const Review = () => {
   const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
-  const [salary, setSalary] = useState(null);
+  const [earning, setEarning] = useState(null);
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -27,16 +27,16 @@ const Review = () => {
       console.log("User", user)
       setLoading(true);
       try {
-        // Latest salary
-        const salaryRes = await fetch(`${API_URL}/salary/latest/${savedUser.id}`);
-        const salaryData = await salaryRes.json();
+        // Latest earning
+        const earningRes = await fetch(`${API_URL}/earning/latest/${savedUser.id}`);
+        const earningData = await earningRes.json();
 
-        if (!salaryRes.ok || !salaryData.success) {
-          setError("No salary found. Please add salary first.");
+        if (!earningRes.ok || !earningData.success) {
+          setError("No earning found. Please add earning first.");
           setLoading(false);
           return;
         }
-        setSalary(salaryData.salary);
+        setEarning(earningData.earning);
 
         // Expenses
         const expenseRes = await fetch(`${API_URL}/expense/all`, {
@@ -57,13 +57,13 @@ const Review = () => {
           return;
         }
 
-        // Filter by salary month
-        const salaryMonth = new Date(salaryData.salary.salary_date).getMonth();
-        const salaryYear = new Date(salaryData.salary.salary_date).getFullYear();
+        // Filter by earning month
+        const earningMonth = new Date(earningData.earning.earning_date).getMonth();
+        const earningYear = new Date(earningData.earning.earning_date).getFullYear();
 
         const filtered = expenseData.expenses.filter((exp) => {
           const expDate = new Date(exp.expense_date);
-          return expDate.getMonth() === salaryMonth && expDate.getFullYear() === salaryYear;
+          return expDate.getMonth() === earningMonth && expDate.getFullYear() === earningYear;
         });
 
         setExpenses(filtered);
@@ -93,11 +93,11 @@ const Review = () => {
   }
 
   const handleConfirm = () => navigate("/dashboard");
-  const handleEditSalary = () => navigate("/salary-input");
+  const handleEditEarning = () => navigate("/earning");
   const handleEditExpenses = () => navigate("/expenses");
 
   const totalExpenses = expenses.reduce((sum, exp) => sum + parseFloat(exp.amount), 0);
-  const remainingAmount = parseFloat(salary?.amount || 0) - totalExpenses;
+  const remainingAmount = parseFloat(earning?.amount || 0) - totalExpenses;
 
   return (
     <div className={`py-8 px-4 sm:px-8 ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"}`}>
@@ -106,7 +106,7 @@ const Review = () => {
         <i className="bi bi-clipboard-check text-blue-500 text-5xl mb-3"></i>
         <h2 className="text-2xl font-bold">Review Your Financial Data</h2>
         <p className="text-gray-500 dark:text-gray-400">
-          Please review your salary and expenses before proceeding to dashboard
+          Please review your earning and expenses before proceeding to dashboard
         </p>
       </div>
 
@@ -123,21 +123,21 @@ const Review = () => {
 
       {/* Cards */}
       <div className="grid md:grid-cols-3 gap-6 mb-6">
-        {/* Salary Info */}
+        {/* earning Info */}
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
-          <h5 className="font-semibold mb-3">Salary Information</h5>
+          <h5 className="font-semibold mb-3">earning Information</h5>
           <p className="text-sm text-gray-500">User: <span className="font-semibold">{user?.username}</span></p>
-          <p className="text-sm text-gray-500 mt-2">Monthly Salary:</p>
-          <p className="text-green-600 text-xl font-bold">₹{salary?.amount.toLocaleString()}</p>
-          <p className="text-sm text-gray-500 mt-2">Salary Month:</p>
+          <p className="text-sm text-gray-500 mt-2">Monthly earning:</p>
+          <p className="text-green-600 text-xl font-bold">₹{earning?.amount.toLocaleString()}</p>
+          <p className="text-sm text-gray-500 mt-2">earning Month:</p>
           <p className="font-medium">
-            {new Date(salary?.salary_date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+            {new Date(earning?.earning_date).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
           </p>
           <button
-            onClick={handleEditSalary}
+            onClick={handleEditEarning}
             className="mt-4 w-full px-3 py-2 rounded-md text-sm font-medium bg-yellow-100 text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-700 dark:text-white"
           >
-            <i className="bi bi-pencil mr-2"></i> Edit Salary
+            <i className="bi bi-pencil mr-2"></i> Edit earning
           </button>
         </div>
 
@@ -151,8 +151,8 @@ const Review = () => {
             <span className="text-red-500 font-semibold">₹{totalExpenses.toLocaleString()}</span>
           </div>
           <div className="flex justify-between mb-2">
-            <span>Monthly Salary:</span>
-            <span className="text-green-500 font-semibold">₹{salary?.amount.toLocaleString()}</span>
+            <span>Monthly earning:</span>
+            <span className="text-green-500 font-semibold">₹{earning?.amount.toLocaleString()}</span>
           </div>
           <hr className="my-2 border-gray-300 dark:border-gray-600" />
           <div className="flex justify-between">

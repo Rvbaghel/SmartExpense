@@ -16,7 +16,7 @@ const HeroSection = () => {
             </h1>
 
             <p className="text-base sm:text-lg md:text-xl leading-relaxed text-gray-700 dark:text-gray-300 opacity-90 mb-6">
-              Simple and powerful expense tracking. Add your monthly salary, upload
+              Simple and powerful expense tracking. Add your monthly earning, upload
               expenses via CSV, and get beautiful insights about your spending
               habits. No complexity, just results.
             </p>
@@ -40,7 +40,7 @@ const HeroSection = () => {
             {/* CTA Buttons */}
             <div className="flex flex-wrap gap-3 sm:gap-4">
               <Link
-                to="/salary-input"
+                to="/earning"
                 className="px-5 sm:px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-colors no-underline text-sm sm:text-base"
               >
                 Get Started
@@ -97,7 +97,7 @@ const HeroSection = () => {
                 {/* Bottom Stats */}
                 <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-5 right-3 sm:right-5 flex justify-between text-[8px] sm:text-xs">
                   <div className="text-center">
-                    <div className="opacity-80">Salary</div>
+                    <div className="opacity-80">Earning</div>
                     <div className="font-semibold text-xs sm:text-sm">₹80K</div>
                   </div>
                   <div className="text-center">

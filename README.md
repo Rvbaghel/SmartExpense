@@ -16,7 +16,7 @@ SmartExpense helps you **track salaries, manage daily expenses, and organize the
 
 ✅ Add, edit & delete expenses
 ✅ Organize expenses by categories (Food, Travel, Shopping, Others, etc.)
-✅ Track salary history & monthly summaries
+✅ Track earning history & monthly summaries
 ✅ Generate CSV reports of expenses
 ✅ Dark/Light theme support
 ✅ Responsive dashboard with charts
@@ -62,7 +62,7 @@ npm run dev
 ## 📊 Database Schema
 
 * **users** → stores user info
-* **salary** → stores salary history
+* **earning** → stores earning history
 * **expenses** → stores expense records
 * **categories** → predefined + custom categories
 

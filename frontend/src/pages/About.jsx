@@ -51,7 +51,7 @@ const About = () => {
               Purpose
             </h2>
             <p className="text-gray-700 dark:text-gray-300">
-              SmartExpense is a personal finance application designed to help you track your monthly salary and expenses effortlessly. Analyze your spending patterns, visualize your financial data, and make informed decisions.
+              SmartExpense is a personal finance application designed to help you track your monthly earning and expenses effortlessly. Analyze your spending patterns, visualize your financial data, and make informed decisions.
             </p>
 
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
@@ -59,7 +59,7 @@ const About = () => {
             </h2>
             <ul className="space-y-2">
               {[
-                "Monthly salary tracking",
+                "Monthly earning tracking",
                 "CSV/Excel expense upload",
                 "Manual expense entry",
                 "Category-wise expense tracking",
@@ -90,7 +90,7 @@ const About = () => {
                 <div>
                   <strong className="block text-gray-900 dark:text-white">
                     {step === 1
-                      ? "Add Monthly Salary"
+                      ? "Add Monthly earning"
                       : step === 2
                         ? "Upload Expenses"
                         : step === 3
