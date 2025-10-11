@@ -13,6 +13,7 @@ const Information = () => {
 
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
+    const year = new Date().getFullYear()
 
     // ✅ Initialize user once
     useEffect(() => {
@@ -68,7 +69,7 @@ const Information = () => {
                 }
 
                 // Fetch salaries
-                const salRes = await fetch(`${API_URL}/salary/user/${user.id}`);
+                const salRes = await fetch(`${API_URL}/earning/user/${user.id}?year=${year}`);
                 const salData = await salRes.json();
                 setSalaries(salData);
             } catch (error) {
@@ -114,7 +115,7 @@ const Information = () => {
                             className="flex justify-between items-center p-3 rounded-lg bg-gray-100 dark:bg-gray-700 shadow-sm hover:shadow-md transition"
                         >
                             <span className="font-medium text-gray-700 dark:text-gray-200">
-                                {new Date(sal.salary_date).toLocaleDateString("en-US", {
+                                {new Date(sal.earning_date).toLocaleDateString("en-US", {
                                     month: "long",
                                     year: "numeric",
                                 })}
@@ -123,7 +124,7 @@ const Information = () => {
                                 ₹{sal.amount}
                                 /
                                 <span className="font-semibold text-red-600 dark:text-red-400">
-                                    ₹{cumulativeExpenses[new Date(sal.salary_date).getMonth()]}
+                                    ₹{cumulativeExpenses[new Date(sal.earning_date).getMonth()]}
                                 </span>
                             </span>
                         </li>

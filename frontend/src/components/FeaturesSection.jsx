@@ -6,12 +6,12 @@ const FeaturesSection = () => {
   const features = [
     {
       icon: "bi-currency-dollar",
-      iconClass: "icon-salary",
-      title: "Monthly Salary Tracking",
+      iconClass: "icon-earning",
+      title: "Monthly earning Tracking",
       description:
-        "Add and manage your monthly salary easily. Track your income month by month to understand your earnings pattern.",
-      link: "/salary-input",
-      linkText: "Add Salary",
+        "Add and manage your monthly earning easily. Track your income month by month to understand your earnings pattern.",
+      link: "/earning",
+      linkText: "Add earning",
     },
     {
       icon: "bi-receipt-cutoff",
@@ -27,7 +27,7 @@ const FeaturesSection = () => {
       iconClass: "icon-dashboard",
       title: "Visual Analytics Dashboard",
       description:
-        "View beautiful charts showing salary vs expenses, category breakdowns, and spending trends over time.",
+        "View beautiful charts showing earning vs expenses, category breakdowns, and spending trends over time.",
       link: "/dashboard",
       linkText: "View Analytics",
     },
@@ -45,7 +45,7 @@ const FeaturesSection = () => {
   const steps = [
     {
       number: "1",
-      title: "Add Salary",
+      title: "Add Earning",
       desc: "Enter monthly income",
       bg: "from-blue-500 to-blue-700",
     },
@@ -81,7 +81,7 @@ const FeaturesSection = () => {
             Simple Finance Management Made Easy
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-            Track your salary and expenses effortlessly. Upload CSV files,
+            Track your earning and expenses effortlessly. Upload CSV files,
             visualize your spending, and make informed financial decisions with
             SmartExpense.
           </p>

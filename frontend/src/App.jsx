@@ -8,7 +8,7 @@ import BackToTop from './components/BackToTop';
 
 // Pages (ensure exact filenames)
 import Home from './pages/Home';
-import SalaryInput from './pages/SalaryInput';
+import Earning from './pages/Earning';
 import Expenses from './pages/Expenses';
 import Dashboard from './pages/Dashboard';
 import About from './pages/About';
@@ -35,7 +35,7 @@ function App() {
             <main id="main-content">
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/salary-input" element={<SalaryInput />} />
+                <Route path="/earning" element={<Earning />} />
                 <Route path="/expenses" element={<Expenses />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/about" element={<About />} />

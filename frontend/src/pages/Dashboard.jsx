@@ -94,7 +94,7 @@ const Dashboard = () => {
     expenseCategoryBarData,
     expenseCategoryPieData,
     expenseTrendData,
-    salaryTrendData,
+    earningTrendData,
     monthlyExpenseData,
     stats
   } = useMemo(() => {
@@ -113,9 +113,9 @@ const Dashboard = () => {
 
       // Expense by Category (Pie)
       expenseCategoryPieData:
-        charts.expense_by_category_pie?.y?.map((cat, i) => ({
+        charts.expense_by_category_pie?.x?.map((cat, i) => ({
           name: cat,
-          value: charts.expense_by_category_pie.x[i]
+          value: charts.expense_by_category_pie.y[i]
         })) || [],
 
       // Expense Trend (Line)
@@ -125,35 +125,35 @@ const Dashboard = () => {
           amount: charts.expense_trend.y[i]
         })) || [],
 
-      // Salary Trend (Line)
-      salaryTrendData:
-        charts.salary_trend?.x?.map((date, i) => ({
+      // earning Trend (Line)
+      earningTrendData:
+        charts.earning_trend?.x?.map((date, i) => ({
           date,
-          salary: charts.salary_trend.y[i]
+          earning: charts.earning_trend.y[i]
         })) || [],
 
-      // Monthly Expense & Salary (from summary API)
+      // Monthly Expense & earning (from summary API)
       monthlyExpenseData:
         [{
           month: '',
           year: 2025,
           total_expenses: 0,
-          total_salary: 0,
+          total_earning: 0,
           cumulative_expenses: 0,
-          cumulative_salary: 0
+          cumulative_earning: 0
         }, ...charts.monthly_expense?.map((entry) => ({
           month: months[entry.month - 1],
           year: entry.year,
           total_expenses: entry.total_expenses,
-          total_salary: entry.total_salary,
+          total_earning: entry.total_earning,
           cumulative_expenses: entry.cumulative_expenses,
-          cumulative_salary: entry.cumulative_salary
+          cumulative_earning: entry.cumulative_earning
         })) || []],
 
       stats: {
-        totalSalary: charts.monthly_expense[months.length - 1].cumulative_salary || 0,
+        totalearning: charts.monthly_expense[months.length - 1].cumulative_earning || 0,
         totalExpenses: charts.monthly_expense[months.length - 1].cumulative_expenses || 0,
-        remainingAmount: (charts.monthly_expense[months.length - 1].cumulative_salary || 0) - (charts.monthly_expense[months.length - 1].cumulative_expenses || 0),
+        remainingAmount: (charts.monthly_expense[months.length - 1].cumulative_earning || 0) - (charts.monthly_expense[months.length - 1].cumulative_expenses || 0),
         expenseCount: charts.expense_trend.x.length || 0
       }
     };
@@ -213,7 +213,7 @@ const Dashboard = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {/* Total Salary */}
+        {/* Total earning */}
         <div
           className={`p-4 rounded-xl shadow-sm border transition-colors 
       ${isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}
@@ -223,9 +223,9 @@ const Dashboard = () => {
               <i className="bi bi-cash-coin text-green-600 dark:text-green-400 text-2xl"></i>
             </div>
             <div className="ml-4">
-              <p className="text-sm text-gray-500 dark:text-gray-400">Total Salary</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Total earning</p>
               <h4 className="text-2xl font-semibold text-green-600 dark:text-green-400">
-                ₹{stats.totalSalary.toLocaleString()}
+                ₹{stats.totalearning.toLocaleString()}
               </h4>
             </div>
           </div>
@@ -519,14 +519,14 @@ const Dashboard = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Salary Trend */}
+        {/* earning Trend */}
         <div className={`p-4 border rounded-lg shadow transition 
     ${isDarkMode ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`}>
           <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-400">
-            Salary Trend
+            Earning Trend
           </h2>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={salaryTrendData}>
+            <LineChart data={earningTrendData}>
               <XAxis
                 dataKey="date"
                 tick={{ fill: isDarkMode ? "#e5e7eb" : "#374151" }}
@@ -545,7 +545,7 @@ const Dashboard = () => {
               <Legend wrapperStyle={{ color: isDarkMode ? "#e5e7eb" : "#374151" }} />
               <Line
                 type="monotone"
-                dataKey="salary"
+                dataKey="earning"
                 stroke={isDarkMode ? "#34d399" : "#059669"} // green-400 / green-600
                 strokeWidth={2}
               />
@@ -557,7 +557,7 @@ const Dashboard = () => {
         <div className={`p-4 border rounded-lg shadow transition 
     ${isDarkMode ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`}>
           <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-400">
-            Progress of Salary and Expense
+            Progress of earning and Expense
           </h2>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={monthlyExpenseData}>
@@ -577,7 +577,7 @@ const Dashboard = () => {
               <Legend wrapperStyle={{ color: isDarkMode ? "#e5e7eb" : "#374151" }} />
               <Line
                 type="monotone"
-                dataKey="cumulative_salary"
+                dataKey="cumulative_earning"
                 stroke={isDarkMode ? "var(--color-green-400)" : "var(--color-green-600)"} // red-400 / red-600
                 strokeWidth={2}
               />
@@ -591,11 +591,11 @@ const Dashboard = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Monthly Salary vs Expense */}
+        {/* Monthly earning vs Expense */}
         <div className={`p-4 border rounded-lg shadow transition 
     ${isDarkMode ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`}>
           <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-400">
-            Salary and Expense Distribution
+            Earning and Expense Distribution
           </h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={monthlyExpenseData.slice(1)}>
@@ -615,7 +615,7 @@ const Dashboard = () => {
               />
               <Legend wrapperStyle={{ color: isDarkMode ? "#e5e7eb" : "#374151" }} />
               <Bar
-                dataKey="total_salary"
+                dataKey="total_earning"
                 fill={isDarkMode ? "var(--color-green-400)" : "var(--color-green-600)"} // red-400 / red-600
               />
               <Bar
@@ -656,7 +656,7 @@ const Dashboard = () => {
             {/* Right Section */}
             <div className="flex flex-wrap gap-2 justify-start md:justify-end">
               <button
-                onClick={() => navigate("/salary-input")}
+                onClick={() => navigate("/earning-input")}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium border 
                 transition-all duration-200 hover:scale-105
                 ${isDarkMode
@@ -665,7 +665,7 @@ const Dashboard = () => {
                   }`}
               >
                 <i className="bi bi-plus-circle me-1"></i>
-                Add Salary
+                Add earning
               </button>
 
               <button

@@ -48,8 +48,8 @@ const Footer = () => {
             </h6>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/salary-input" className="no-underline">
-                  Add Salary
+                <Link to="/earning" className="no-underline">
+                  Add Earning
                 </Link>
               </li>
               <li>

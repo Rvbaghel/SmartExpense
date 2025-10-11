@@ -44,7 +44,7 @@ def insert_expense(cate_id, user_id, amount, expense_date):
     # ✅ Ensure date is correct format
     if isinstance(expense_date, str):
         try:
-            expense_date = datetime.datetime.strptime(expense_date, "%d-%m-%Y").date()
+            expense_date = datetime.datetime.strptime(expense_date, "%Y-%m-%d").date()
         except ValueError:
             raise ValueError("expense_date must be in YYYY-MM-DD format")
 

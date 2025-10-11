@@ -5,9 +5,9 @@ const HowItWorksSection = () => {
   const steps = [
     {
       number: 1,
-      title: "Add Monthly Salary",
+      title: "Add Monthly earning",
       description:
-        "Enter your monthly salary amount. Simple one-time setup for each month to track your income.",
+        "Enter your monthly earning amount. Simple one-time setup for each month to track your income.",
     },
     {
       number: 2,
@@ -25,7 +25,7 @@ const HowItWorksSection = () => {
       number: 4,
       title: "View Analytics Dashboard",
       description:
-        "See beautiful charts showing salary vs expenses, spending by category, and monthly trends to make informed decisions.",
+        "See beautiful charts showing earning vs expenses, spending by category, and monthly trends to make informed decisions.",
     },
   ]
 
@@ -66,7 +66,7 @@ const HowItWorksSection = () => {
             <div className="flex flex-wrap justify-center items-center gap-4">
               <div className="flex items-center">
                 <span className="px-4 py-2 rounded-full bg-sky-500 text-white text-sm font-medium">
-                  Salary
+                  Earning
                 </span>
                 <i className="bi bi-arrow-right mx-3 text-gray-400 dark:text-gray-500"></i>
               </div>

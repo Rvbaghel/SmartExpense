@@ -10,7 +10,7 @@ const Expenses = () => {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [salary, setSalary] = useState(null);
+  const [earning, setEarning] = useState(null);
   const [categories, setCategories] = useState([]);
   const [strictDisable, setStrictDisable] = useState(true);
   const [error, setError] = useState("");
@@ -352,10 +352,10 @@ const Expenses = () => {
         {/* Submit */}
         <div className="flex justify-end gap-3">
           <button
-            onClick={() => navigate("/salary-input")}
+            onClick={() => navigate("/earning")}
             className="px-4 py-2 border rounded-md bg-gray-200 dark:bg-gray-700"
           >
-            Back to Salary
+            Back to earning
           </button>
           <button
             onClick={handleSubmit}

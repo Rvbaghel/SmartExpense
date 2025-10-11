@@ -4,7 +4,7 @@ import { useTheme } from "../context/ThemeContext";
 import Loader from "../components/Loader";
 import { API_URL } from "../config";
 
-const SalaryInput = () => {
+const Earning = () => {
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
 
@@ -15,7 +15,7 @@ const SalaryInput = () => {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const salaryTimeout = useRef(null);
+  const earningTimeout = useRef(null);
   const yearTimeout = useRef(null);
   const abortController = useRef(null);
 
@@ -49,14 +49,14 @@ const SalaryInput = () => {
     try {
       setLoading(true);
       abortController.current = new AbortController();
-      const res = await fetch(`${API_URL}/salary/user/${userId}`, {
+      const res = await fetch(`${API_URL}/earning/user/${userId}`, {
         signal: abortController.current.signal,
       });
       const data = await res.json();
       const salariesByMonth = Array(12).fill("");
 
       data.forEach(item => {
-        const date = new Date(item.salary_date);
+        const date = new Date(item.earning_date);
         if (date.getFullYear() === Number(selectedYear)) {
           salariesByMonth[date.getMonth()] = item.amount;
         }
@@ -66,7 +66,7 @@ const SalaryInput = () => {
     } catch (err) {
       if (err.name !== "AbortError") {
         console.error(err);
-        setError("Failed to fetch salary data");
+        setError("Failed to fetch earning data");
       }
     } finally {
       setLoading(false);
@@ -117,7 +117,7 @@ const SalaryInput = () => {
     setSuccess("");
 
     if (!monthlySalaries.some(val => val)) {
-      setError("Enter at least one month salary!");
+      setError("Enter at least one month earning!");
       return;
     }
 
@@ -126,13 +126,13 @@ const SalaryInput = () => {
       const promises = monthlySalaries.map(async (amt, idx) => {
         if (!amt) return null;
         const month = (idx + 1).toString().padStart(2, "0");
-        const response = await fetch(`${API_URL}/salary/add`, {
+        const response = await fetch(`${API_URL}/earning/add`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             user_id: user.id,
             amount: amt,
-            salary_date: `${year}-${month}-01`,
+            earning_date: `${year}-${month}-01`,
           }),
         });
         const res = await response.json()
@@ -142,7 +142,7 @@ const SalaryInput = () => {
 
       const results = await Promise.all(promises.filter(Boolean));
       await Promise.all(results.map(r => r));
-      setSuccess("Salary saved successfully!");
+      setSuccess("earning saved successfully!");
     } catch (err) {
       console.error(err);
       setError("Server error.");
@@ -159,7 +159,7 @@ const SalaryInput = () => {
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-2">Welcome, {user.username}</h1>
-          <p className="text-gray-600 dark:text-gray-400">Plan your annual salary dynamically</p>
+          <p className="text-gray-600 dark:text-gray-400">Plan your annual earning dynamically</p>
         </div>
 
         <div className="max-w-md mx-auto mb-8">
@@ -196,7 +196,7 @@ const SalaryInput = () => {
 
           <div className="max-w-md mx-auto">
             <button type="submit" className="w-full py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-md transition-colors">
-              Save Annual Salary
+              Save Annual earning
             </button>
           </div>
         </form>
@@ -211,4 +211,4 @@ const SalaryInput = () => {
   );
 };
 
-export default SalaryInput;
+export default Earning;
