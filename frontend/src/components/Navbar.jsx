@@ -22,9 +22,6 @@ const Navbar = () => {
   const commonLinks = [
     { path: "/", label: "Home" },
     { path: "/about", label: "About" },
-    { path: "/earning", label: "Earning" },
-    { path: "/expenses", label: "Expenses" },
-    { path: "/dashboard", label: "Dashboard" },
   ]
 
   // Auth-dependent links
@@ -34,6 +31,11 @@ const Navbar = () => {
       { path: "/login", label: "Login" },
     ]
     : [
+
+      { path: "/earning", label: "Earning" },
+      { path: "/expenses", label: "Expenses" },
+      { path: "/dashboard", label: "Dashboard" },
+      { path: "/summary", label: "Summary" },
       { path: "/track-info", label: "Information" },
       { path: "/profile", label: "Profile" },
       { path: "/logout", label: "Logout", action: handleLogout },
