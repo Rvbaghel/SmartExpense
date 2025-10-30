@@ -252,7 +252,7 @@ const Expenses = () => {
       const data = await res.json();
       if (data.success) {
         setSuccess("Expenses submitted successfully! Redirecting...");
-        setTimeout(() => navigate("/review", { replace: true }), 2000);
+        setTimeout(() => navigate("/summary", { replace: true }), 2000);
         setExpenseData([]);
       } else {
         setError(data.error || "Failed to submit expenses.");

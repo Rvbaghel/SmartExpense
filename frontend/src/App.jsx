@@ -15,7 +15,7 @@ import About from './pages/About';
 import Login from './pages/Login';
 import Signup from './pages/SignUp';       // file must be SignUp.jsx
 import Profile from './pages/Profile';
-import Review from './pages/Review';       // file must be Review.jsx
+import Summary from './pages/Summary';       // file must be Review.jsx
 
 // Context
 import ThemeProvider from './context/ThemeContext';
@@ -43,7 +43,7 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/track-info" element={<Information />} />
-                <Route path="/review" element={<Review />} />   {/* ✅ Added Review route */}
+                <Route path="/summary" element={<Summary />} />   {/* ✅ Added Review route */}
               </Routes>
             </main>
             <Footer />

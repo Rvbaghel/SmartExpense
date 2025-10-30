@@ -42,7 +42,7 @@ def add_earning():
 @earning_bp.route("/user/<int:user_id>", methods=["GET"])
 def get_earning(user_id):
     try:
-        year = int(request.args.get("year") or datetime.now().year)
+        year = int(request.args.get("year") or datetime.datetime.now().year)
         salaries = get_salaries_by_user_year(user_id, year)
         # salaries is already a list of dicts from RealDictCursor
         print("Earning", salaries)
