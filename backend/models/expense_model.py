@@ -71,22 +71,17 @@ def insert_expense(cate_id, user_id, amount, expense_date):
 
 
 def get_all_expenses(user_id):
-    """
-    Fetch all expenses (joined with category name).
-    """
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute("""
-        SELECT e.id, e.user_id, e.amount, e.expense_date, e.created_at, 
-               c.name AS category_name, c.id AS cate_id
-        FROM expense e
-        JOIN category c ON e.cate_id = c.id 
-        AND e.user_id = %s
-        ORDER BY e.expense_date DESC;
+        SELECT * FROM expense
+        WHERE user_id = %s
+        ORDER BY expense_date DESC;
     """, (user_id,))
-    expenses = cursor.fetchall()
+    rows = cursor.fetchall()
     conn.close()
-    return expenses
+    return rows
+
 
 def delete_expenses(month, year):
     """

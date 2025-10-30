@@ -123,46 +123,40 @@ def insert_earning(user_id, amount, earning_date):
 
 
 def get_salaries_by_user(user_id):
-    """Fetch all earnings for a user ordered by date."""
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
-    cursor.execute("""
-        SELECT * FROM earning
-        WHERE user_id = %s
-        ORDER BY earning_date DESC;
-    """, (user_id,))
-    data = cursor.fetchall()
+    cursor.execute("SELECT * FROM earning WHERE user_id = %s ORDER BY earning_date DESC;", (user_id,))
+    rows = cursor.fetchall()
     conn.close()
-    return data
+    return rows
+
 
 def get_salaries_by_user_year(user_id, year):
-    """Fetch earnings for a specific month & year."""
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute("""
         SELECT * FROM earning
-        WHERE user_id = %s
-          AND EXTRACT(YEAR FROM earning_date) = %s
-        ORDER BY earning_date DESC;
+        WHERE user_id = %s AND EXTRACT(YEAR FROM earning_date) = %s
+        ORDER BY earning_date ASC;
     """, (user_id, year))
-    data = cursor.fetchall()
+    rows = cursor.fetchall()
     conn.close()
-    return data
+    return rows
+
 
 def get_salaries_by_user_month_year(user_id, month, year):
-    """Fetch earnings for a specific month & year."""
     conn = get_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute("""
         SELECT * FROM earning
         WHERE user_id = %s
-          AND EXTRACT(MONTH FROM earning_date) = %s
-          AND EXTRACT(YEAR FROM earning_date) = %s
-        ORDER BY earning_date DESC;
+        AND EXTRACT(MONTH FROM earning_date) = %s
+        AND EXTRACT(YEAR FROM earning_date) = %s
+        ORDER BY earning_date ASC;
     """, (user_id, month, year))
-    data = cursor.fetchall()
+    rows = cursor.fetchall()
     conn.close()
-    return data
+    return rows
 
 
 def get_salaries_by_user_month_year(user_id, month, year):
