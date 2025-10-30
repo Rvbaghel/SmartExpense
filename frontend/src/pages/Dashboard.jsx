@@ -9,6 +9,7 @@ import {
   CartesianGrid
 } from "recharts";
 import { format, parseISO } from "date-fns";
+import Loader from "../components/Loader";
 
 const COLORS = [
   "#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#0088fe",
@@ -33,10 +34,11 @@ const Dashboard = () => {
     "July", "August", "September", "October", "November", "December"
   ];
 
-  const years = Array.from(
-    { length: new Date().getFullYear() - 2022 + 1 },
-    (_, i) => 2022 + i
-  );
+  const years = useMemo(() => {
+    const start = 2022;
+    const current = new Date().getFullYear();
+    return Array.from({ length: current - start + 1 }, (_, i) => start + i);
+  }, []);
 
   // Optimized fetch with abort + debounce
   const fetchDashboardData = useCallback(async (uid, y, m, controller) => {
@@ -67,7 +69,7 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [navigate]);
 
   // Effect for loading data (with debounce + cancel)
   useEffect(() => {
@@ -158,19 +160,9 @@ const Dashboard = () => {
       }
     };
 
-  }, [dashboardData]);
+  }, [dashboardData, year]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-white dark:bg-black">
-        <div className="flex space-x-2">
-          <span className="w-3 h-3 bg-sky-500 rounded-full animate-bounce [animation-delay:-0.75s]"></span>
-          <span className="w-3 h-3 bg-sky-500 rounded-full animate-bounce [animation-delay:-0.5s]"></span>
-          <span className="w-3 h-3 bg-sky-500 rounded-full animate-bounce [animation-delay:-0.25s]"></span>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <Loader />
 
   if (error) {
     return (
@@ -411,7 +403,7 @@ const Dashboard = () => {
         {/* Expense by Category Bar */}
         <div className={`p-4 border rounded-lg shadow transition 
     ${isDarkMode ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`}>
-          <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-400 ">Expense by Category (Bar)</h2>
+          <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-400 ">Yearly Expense by Category </h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={expenseCategoryBarData}>
               <XAxis dataKey="category" />
@@ -435,7 +427,7 @@ const Dashboard = () => {
         <div className={`p-4 border rounded-lg shadow transition 
     ${isDarkMode ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`}>
           <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-400">
-            Expense by Category (Pie)
+            Monthly Expense by Category
           </h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -480,7 +472,7 @@ const Dashboard = () => {
                 }}
                 cursor={{ fill: "rgba(156, 163, 175, 0.15)" }} // subtle hover background
               />
-
+              <Legend align="right" />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -557,7 +549,7 @@ const Dashboard = () => {
         <div className={`p-4 border rounded-lg shadow transition 
     ${isDarkMode ? "bg-gray-800 border-gray-700 text-gray-200" : "bg-white border-gray-200 text-gray-800"}`}>
           <h2 className="text-lg font-semibold mb-2 text-sky-500 dark:text-teal-400">
-            Progress of earning and Expense
+            Progress of Earning and Expense
           </h2>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={monthlyExpenseData}>
@@ -682,7 +674,7 @@ const Dashboard = () => {
               </button>
 
               <button
-                onClick={() => navigate("/review")}
+                onClick={() => navigate("/summary")}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium border 
                 transition-all duration-200 hover:scale-105
                 ${isDarkMode
